@@ -30,6 +30,10 @@ const AopMaster = db.define('aop_master', {
     },
     budget: {
         type: Sequelize.BIGINT
+    },
+    approvedFlag: {
+        type: Sequelize.BOOLEAN,
+        Default : false
     }
 });
 
