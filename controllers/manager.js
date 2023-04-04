@@ -1,15 +1,7 @@
 const AOPMaster = require("../models/aop_master");
 const RequestTable = require("../models/request_table");
+const DemandMaster = require("../models/demand_master")
 
-exports.getUsers = (req, res, next) => {
-  // console.log("Function Hit");
-  AOPMaster.findAll()
-    .then((users) => {
-      // console.log(users[0].dataValues.name);
-      res.status(200).json(users);
-    })
-    .catch((err) => console.log(err));
-};
 
 exports.createAOPRequest = (req, res, next) => {
   const aop_code = req.body.aop_code;
@@ -58,6 +50,90 @@ exports.createAOPRequest = (req, res, next) => {
     });
 };
 
-exports.showAllAOP = (req,res,next)=>{
-    
+exports.showAllAOP = (req, res, next) => {
+  AOPMaster.findAll()
+    .then((users) => {
+      res.status(200).json(users);
+    })
+    .catch((err) => console.log(err));
+};
+
+exports.showManagerAOP = (req, res, next) => {
+  const aop_owner = req.body.aop_owner;
+
+  AOPMaster.findAll({
+    where: {
+      aop_owner: aop_owner,
+    },
+  })
+    .then((result) => {
+      res.status(200).json({
+        Project: result,
+      });
+    })
+    .catch((err) => console.log(err));
+};
+
+exports.showOneAOP = (req, res, next) => {
+  const project_code = req.body.project_code;
+
+  AOPMaster.findAll({
+    where: {
+      project_code: project_code,
+    },
+  })
+    .then((result) => {
+      RequestTable.findAll({
+        where: {
+          project_code: project_code,
+        },
+      })
+      .then((requesttable) => {
+        res.status(200).json({
+          Request: requesttable,
+
+          Aop: result,
+        });
+      });
+    })
+    .catch((err) => console.log(err));
+};
+
+exports.createAOPResourceRequest = (req, res, next) => {
+    const project_id = req.body.project_id;
+    const employee_id = req.body.employee_id;
+    const fiscal_year = req.body.fiscal_year;
+    const band = req.body.band;
+    const skill = req.body.skill;
+    const resource_type = req.body.resource_type;
+    DemandMaster.create({
+        project_id: project_id,
+        employee_id: employee_id,
+        fiscal_year: fiscal_year,
+        band: band,
+        skill: skill,
+        resource_type: resource_type,
+    })
+        .then((result) => {
+            res.status(201).json({
+                message: "Demand request created successfully",
+                user: result,
+            });
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+};
+
+exports.fetchAOPResourceRequest = (req,res,next) =>{
+  const project_id = req.body.project_id;
+  DemandMaster.findAll({
+    where: {
+      project_id: project_id
+    }
+  }).then((demands)=>{
+    res.status(200).json(demands);
+  }).catch((err)=>{
+    console.log(err);
+  })
 }

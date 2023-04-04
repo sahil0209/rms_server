@@ -2,10 +2,6 @@ const Sequelize = require("sequelize");
 const db = require("../util/db");
 
 const demandMaster = db.define("demand_master", {
-  demand_id: {
-    type: Sequelize.INTEGER,
-    autoIncrement: true,
-  },
   project_id: {
     type: Sequelize.STRING,
   },
@@ -14,39 +10,51 @@ const demandMaster = db.define("demand_master", {
   },
   january: {
     type: Sequelize.INTEGER,
+    defaultValue: 100,
   },
   february: {
     type: Sequelize.INTEGER,
+    defaultValue: 100,
   },
   march: {
     type: Sequelize.INTEGER,
+    defaultValue: 100,
   },
   april: {
     type: Sequelize.INTEGER,
+    defaultValue: 100,
   },
   may: {
     type: Sequelize.INTEGER,
+    defaultValue: 100,
   },
   june: {
     type: Sequelize.INTEGER,
+    defaultValue: 100,
   },
   july: {
     type: Sequelize.INTEGER,
+    defaultValue: 100,
   },
   august: {
     type: Sequelize.INTEGER,
+    defaultValue: 100,
   },
   september: {
     type: Sequelize.INTEGER,
+    defaultValue: 100,
   },
   october: {
     type: Sequelize.INTEGER,
+    defaultValue: 100,
   },
   november: {
     type: Sequelize.INTEGER,
+    defaultValue: 100,
   },
   december: {
     type: Sequelize.INTEGER,
+    defaultValue: 100,
   },
 
   fiscal_year: {
