@@ -8,6 +8,7 @@ const employeeMaster = db.define("employee_master", {
   },
   employee_id: {
     type: Sequelize.STRING,
+    primaryKey: true
   },
   employee_name: {
     type: Sequelize.STRING,
@@ -20,7 +21,7 @@ const employeeMaster = db.define("employee_master", {
   },
   employee_skill: {
     type: Sequelize.STRING,
-  }
+  },
 });
 
 module.exports = employeeMaster;
