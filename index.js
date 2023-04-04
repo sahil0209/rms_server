@@ -5,6 +5,7 @@ const app = express();
 require("dotenv").config();
 const port = process.env.PORT;
 const userRoute = require("./routes/users");
+const managerRoute = require("./routes/manager");
 
 app.use(bodyParser.json());
 
@@ -26,6 +27,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/users", userRoute);
+app.use("/manager",managerRoute);
 
 sequelize
     .sync()

@@ -2,10 +2,10 @@ const Sequelize = require("sequelize");
 const db = require("../util/db");
 
 const requestTable = db.define("request_table", {
-  request_id: {
-    type: Sequelize.INTEGER,
-    autoIncrement: true,
-  },
+  // request_id: {
+  //   type: Sequelize.INTEGER,
+  //   autoIncrement: true,
+  // },
   project_code: {
     type: Sequelize.STRING,
   },
@@ -20,10 +20,6 @@ const requestTable = db.define("request_table", {
   },
   no_of_employee: {
     type: Sequelize.INTEGER,
-  },
-  approved_request: {
-    type: Sequelize.BOOLEAN,
-    default: false,
   },
 });
 
