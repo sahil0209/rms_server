@@ -31,8 +31,8 @@ const AopMaster = db.define("aop_master", {
     type: Sequelize.BIGINT,
   },
   approved_flag: {
-    type: Sequelize.BOOLEAN,
-    Default: false,
+    type: Sequelize.INTEGER,
+    Default: 0,
   },
 });
 

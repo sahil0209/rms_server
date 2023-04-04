@@ -57,3 +57,7 @@ exports.createAOPRequest = (req, res, next) => {
       console.log(err);
     });
 };
+
+exports.showAllAOP = (req,res,next)=>{
+    
+}
