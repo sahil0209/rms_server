@@ -34,6 +34,12 @@ const AopMaster = db.define("aop_master", {
     type: Sequelize.INTEGER,
     Default: 0,
   },
+  start_date: {
+    type: Sequelize.DATE,
+  },
+  end_date: {
+    type: Sequelize.DATE,
+  }
 });
 
 module.exports = AopMaster;
