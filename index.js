@@ -7,12 +7,7 @@ const port = process.env.PORT;
 const userRoute = require("./routes/users");
 const managerRoute = require("./routes/manager");
 const adminRoute = require("./routes/admin");
-<<<<<<< HEAD
-var cors=require("cors");
-
-=======
 var cors = require('cors');
->>>>>>> a862f62be62d83874cf45b5c6294c2d9fa24e83c
 app.use(bodyParser.json());
 
 app.use(
@@ -22,11 +17,7 @@ app.use(
 );
 
 app.use(cors({
-<<<<<<< HEAD
-    origin:"*"
-=======
     origin:'*'
->>>>>>> a862f62be62d83874cf45b5c6294c2d9fa24e83c
 }))
 
 app.use((error, req, res, next) => {
