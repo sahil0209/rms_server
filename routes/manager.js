@@ -5,7 +5,6 @@ const router = express.Router();
 // router.get("/", controllers.getUsers);
 
 router.post("/createAOPRequest", controllers.createAOPRequest);
-router.get("/showAllAOP", controllers.showAllAOP);
 router.post("/showManagerAOP", controllers.showManagerAOP);
 router.post("/showOneAOP", controllers.showOneAOP);
 router.post("/createAOPResourceRequest", controllers.createAOPResourceRequest);

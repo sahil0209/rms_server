@@ -55,7 +55,7 @@ exports.acceptAOPRequest = (req, res, next) => {
 
 exports.rejectResource = (req, res, next) => {
   const id = req.body.demand_id;
-  DemandMaster.destroy({ where: { id: id } }).then((result) => {
+  DemandMaster.update({ status: -1 }, { where: { id: id } }).then((result) => {
     res.status(200).json({
       message: "Resource allocation has been rejected",
       user: result,
@@ -105,9 +105,11 @@ exports.approveResource = (req, res, next) => {
     resource_type: resource_type,
   })
     .then((result) => {
-      res.status(201).json({
-        message: "Resource allocated successfully",
-        user: result,
+      DemandMaster.update({ status: 1 }, { where: { id: id } }).then((res1) => {
+        res1.status(201).json({
+          message: "Resource allocated successfully",
+          user: result,
+        });
       });
     })
     .catch((err) => {
@@ -240,5 +242,31 @@ exports.checkBandwidth = (req, res, next) => {
       res.status(200).json(data);
     })
 
+    .catch((err) => console.log(err));
+};
+
+exports.showDemandByProjectId = (req, res, next) => {
+  DemandMaster.findAll({
+    where: { project_id: req.body.project_id },
+  })
+
+    .then((demands) => {
+      res.status(200).json(demands);
+    })
+
+    .catch((err) => console.log(err));
+};
+// .then((demands) => {
+//     res.status(200).json(demands);
+// })
+
+// .catch((err) => console.log(err));
+// }
+
+exports.showAllAOP = (req, res, next) => {
+  AOPMaster.findAll()
+    .then((users) => {
+      res.status(200).json(users);
+    })
     .catch((err) => console.log(err));
 };
