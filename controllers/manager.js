@@ -14,7 +14,7 @@ exports.createAOPRequest = (req, res, next) => {
   const project_stage = req.body.project_stage;
   const description = req.body.description;
   const budget = req.body.budget;
-  const approved_flag = req.body.approved_flag;
+  
 
   AOPMaster.create({
     aop_code: aop_code,
@@ -26,7 +26,7 @@ exports.createAOPRequest = (req, res, next) => {
     project_stage: project_stage,
     description: description,
     budget: budget,
-    approved_flag: approved_flag,
+
   })
     .then((result) => {
       req.body.skills
@@ -36,7 +36,7 @@ exports.createAOPRequest = (req, res, next) => {
             band: ele.band,
             resource_type: ele.resource_type,
             skill: ele.skill,
-            no_of_employee: ele.no_of_employee,
+            no_of_employee: ele.numemp,
           });
         })
         .then((result) => {

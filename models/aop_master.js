@@ -32,7 +32,7 @@ const AopMaster = db.define("aop_master", {
   },
   approved_flag: {
     type: Sequelize.INTEGER,
-    Default: 0,
+    defaultValue: 0,
   },
 });
 

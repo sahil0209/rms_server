@@ -7,6 +7,7 @@ const port = process.env.PORT;
 const userRoute = require("./routes/users");
 const managerRoute = require("./routes/manager");
 const adminRoute = require("./routes/admin");
+var cors=require("cors");
 
 app.use(bodyParser.json());
 
@@ -15,6 +16,10 @@ app.use(
         extended: true,
     })
 );
+
+app.use(cors({
+    origin:"*"
+}))
 
 app.use((error, req, res, next) => {
     console.log(error);
