@@ -38,7 +38,7 @@ exports.createAOPRequest = (req, res, next) => {
           RequestTable.create({
             project_code: project_code,
             band: ele.band,
-            resource_type: ele.resource_type,
+            resource_type: ele.type,
             skill: ele.skill,
             no_of_employee: ele.numemp,
           });
