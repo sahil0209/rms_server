@@ -35,10 +35,10 @@ const AopMaster = db.define("aop_master", {
     Default: 0,
   },
   start_date: {
-    type: Sequelize.DATE,
+    type: Sequelize.DATEONLY,
   },
   end_date: {
-    type: Sequelize.DATE,
+    type: Sequelize.DATEONLY,
   }
 });
 

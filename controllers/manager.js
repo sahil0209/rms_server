@@ -15,7 +15,9 @@ exports.createAOPRequest = (req, res, next) => {
   const description = req.body.description;
   const budget = req.body.budget;
   const approved_flag = req.body.approved_flag;
-
+  const start_date = req.body.start_date;
+  const end_date = req.body.end_date;
+ 
   AOPMaster.create({
     aop_code: aop_code,
     sub_aop_code: sub_aop_code,
@@ -27,6 +29,8 @@ exports.createAOPRequest = (req, res, next) => {
     description: description,
     budget: budget,
     approved_flag: approved_flag,
+    start_date : start_date,
+    end_date : end_date
   })
     .then((result) => {
       req.body.skills
