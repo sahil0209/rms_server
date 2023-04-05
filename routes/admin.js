@@ -10,6 +10,7 @@ router.post("/rejectResource", controllers.rejectResource);
 router.post("/approveResource", controllers.approveResource);
 router.post("/createEmployee", controllers.createEmployee);
 router.post("/editAOPResourceRequest", controllers.editAOPResourceRequest);
+router.post("/showResourceByProjectId", controllers.showResourceByProjectId);
 router.post("/showDemandByProjectId", controllers.showDemandByProjectId);
 router.get("/showAllDemand", controllers.showAllDemand);
 router.get("/showAllApprove", controllers.showAllApprove);
