@@ -256,3 +256,17 @@ exports.showDemandByProjectId = (req, res, next) => {
 
     .catch((err) => console.log(err));
 };
+// .then((demands) => {
+//     res.status(200).json(demands);
+// })
+
+// .catch((err) => console.log(err));
+// }
+
+exports.showAllAOP = (req, res, next) => {
+  AOPMaster.findAll()
+    .then((users) => {
+      res.status(200).json(users);
+    })
+    .catch((err) => console.log(err));
+};

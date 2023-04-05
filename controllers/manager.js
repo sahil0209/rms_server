@@ -51,13 +51,6 @@ exports.createAOPRequest = (req, res, next) => {
     });
 };
 
-exports.showAllAOP = (req, res, next) => {
-  AOPMaster.findAll()
-    .then((users) => {
-      res.status(200).json(users);
-    })
-    .catch((err) => console.log(err));
-};
 
 exports.showManagerAOP = (req, res, next) => {
   const aop_owner = req.body.aop_owner;

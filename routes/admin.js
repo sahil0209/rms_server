@@ -13,7 +13,7 @@ router.post("/editAOPResourceRequest", controllers.editAOPResourceRequest);
 router.post("/showDemandByProjectId", controllers.showDemandByProjectId);
 router.get("/showAllDemand", controllers.showAllDemand);
 router.get("/showAllApprove", controllers.showAllApprove);
-router.get("/showAllApprove", controllers.showAllApprove);
 router.get("/checkBandwidth", controllers.checkBandwidth);
+router.get("/showAllAOP", controllers.showAllAOP);
 
 module.exports = router;
