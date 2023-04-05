@@ -12,5 +12,7 @@ router.post("/createEmployee", controllers.createEmployee);
 router.post("/editAOPResourceRequest", controllers.editAOPResourceRequest);
 router.get("/showAllDemand", controllers.showAllDemand);
 router.get("/showAllApprove", controllers.showAllApprove);
+router.get("/showAllApprove", controllers.showAllApprove);
+router.get("/checkBandwidth", controllers.checkBandwidth);
 
 module.exports = router;
