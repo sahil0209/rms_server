@@ -217,9 +217,33 @@ exports.showAllApprove = (req, res, next) => {
 };
 
 exports.checkBandwidth = (req, res, next) => {
-  sequelize
-    .query(
-      `
+  let employee_id = req.body.employee_id;
+  AllocationMaster.findAll({ where: { employee_id: employee_id } }).then(
+    (res1) => {
+      console.log("\\\\\\\\\\\\\\\\\\\\\\", res1);
+      if (res1.length == 0) {
+        res.status(200).json([
+          [
+            {
+              january: 0,
+              february: 0,
+              march: 0,
+              april: 0,
+              may: 0,
+              june: 0,
+              july: 0,
+              august: 0,
+              september: 0,
+              october: 0,
+              november: 0,
+              december: 0,
+            },
+          ],
+        ]);
+      } else {
+        sequelize
+          .query(
+            `
       select 
       sum(january) as "january",
       sum(february) as "february", 
@@ -235,14 +259,16 @@ exports.checkBandwidth = (req, res, next) => {
       sum(december) as "december"
       from allocation_masters 
       group by employee_id 
-      having employee_id = 'E001'
+      having employee_id = '${employee_id}'
     `
-    )
-    .then((data) => {
-      res.status(200).json(data);
-    })
-
-    .catch((err) => console.log(err));
+          )
+          .then((data) => {
+            res.status(200).json(data);
+          })
+          .catch((err) => console.log(err));
+      }
+    }
+  );
 };
 
 exports.showResourceByProjectId = (req, res, next) => {
