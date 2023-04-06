@@ -44,7 +44,7 @@ exports.acceptAOPRequest = (req, res, next) => {
   )
     .then((result) => {
       res.status(200).json({
-        message: "AOP status updated successfully!",
+        message: "AOP request accepted successfully",
         user: result,
       });
     })
