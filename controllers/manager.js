@@ -15,9 +15,7 @@ exports.createAOPRequest = (req, res, next) => {
   const description = req.body.description;
   const budget = req.body.budget;
   const approved_flag = req.body.approved_flag;
-  const start_date = req.body.start_date;
-  const end_date = req.body.end_date;
- 
+
   AOPMaster.create({
     aop_code: aop_code,
     sub_aop_code: sub_aop_code,
@@ -29,8 +27,6 @@ exports.createAOPRequest = (req, res, next) => {
     description: description,
     budget: budget,
     approved_flag: approved_flag,
-    start_date : start_date,
-    end_date : end_date
   })
     .then((result) => {
       req.body.skills
@@ -38,9 +34,9 @@ exports.createAOPRequest = (req, res, next) => {
           RequestTable.create({
             project_code: project_code,
             band: ele.band,
-            resource_type: ele.type,
+            resource_type: ele.resource_type,
             skill: ele.skill,
-            no_of_employee: ele.numemp,
+            no_of_employee: ele.no_of_employee,
           });
         })
         .then((result) => {
@@ -54,7 +50,6 @@ exports.createAOPRequest = (req, res, next) => {
       console.log(err);
     });
 };
-
 
 exports.showManagerAOP = (req, res, next) => {
   const aop_owner = req.body.aop_owner;
@@ -97,20 +92,22 @@ exports.showOneAOP = (req, res, next) => {
 };
 
 exports.createAOPResourceRequest = (req, res, next) => {
+    console.log("called", req.body);
+  console.log("called1");
   const project_id = req.body.project_id;
   const employee_id = req.body.employee_id;
-  const jan = req.body.jan;
-  const feb = req.body.feb;
-  const mar = req.body.mar;
-  const apr = req.body.apr;
-  const may = req.body.may;
-  const jun = req.body.jun;
-  const jul = req.body.jul;
-  const aug = req.body.aug;
-  const sep = req.body.sep;
-  const oct = req.body.oct;
-  const nov = req.body.nov;
-  const dec = req.body.dec;
+  const jan = req.body.jan || 0;
+  const feb = req.body.feb || 0;
+  const mar = req.body.mar || 0;
+  const apr = req.body.apr || 0;
+  const may = req.body.may || 0;
+  const jun = req.body.jun || 0;
+  const jul = req.body.jul || 0;
+  const aug = req.body.aug || 0;
+  const sep = req.body.sep || 0;
+  const oct = req.body.oct || 0;
+  const nov = req.body.nov || 0;
+  const dec = req.body.dec || 0;
   const fiscal_year = req.body.fiscal_year;
   const band = req.body.band;
   const skill = req.body.skill;
@@ -180,22 +177,21 @@ exports.fillAOPResourceRequest = (req, res, next) => {
 };
 
 exports.getEmployeeBandAndSkill = (req, res, next) => {
-  
-    const band = req.body.band;
-    const skill = req.body.skill;
+  const band = req.body.band;
+  const skill = req.body.skill;
 
-    EmployeeMaster.findAll({
-        where : {
-            employee_band : band,
-            employee_skill : skill
-         }
-    }).then((result) => {
-        res.send({
-            emp : result
-        })
+  EmployeeMaster.findAll({
+    where: {
+      employee_band: band,
+      employee_skill: skill,
+    },
+  })
+    .then((result) => {
+      res.send({
+        emp: result,
+      });
     })
-    .catch((err) =>{
-        console.log(err);
-    })
-
+    .catch((err) => {
+      console.log(err);
+    });
 };
