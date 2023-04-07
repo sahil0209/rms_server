@@ -64,22 +64,23 @@ exports.rejectResource = (req, res, next) => {
 };
 
 exports.approveResource = (req, res, next) => {
-  const id = req.body.demand_id;
+  console.log(req.body);
+  const id = req.body.id;
   const project_id = req.body.project_id;
   const employee_id = req.body.employee_id;
   const fiscal_year = req.body.fiscal_year;
-  const jan = req.body.jan;
-  const feb = req.body.feb;
-  const mar = req.body.mar;
-  const apr = req.body.apr;
+  const jan = req.body.january;
+  const feb = req.body.february;
+  const mar = req.body.march;
+  const apr = req.body.april;
   const may = req.body.may;
-  const jun = req.body.jun;
-  const jul = req.body.jul;
-  const aug = req.body.aug;
-  const sep = req.body.sep;
-  const oct = req.body.oct;
-  const nov = req.body.nov;
-  const dec = req.body.dec;
+  const jun = req.body.june;
+  const jul = req.body.july;
+  const aug = req.body.august;
+  const sep = req.body.september;
+  const oct = req.body.october;
+  const nov = req.body.november;
+  const dec = req.body.december;
   const band = req.body.band;
   const skill = req.body.skill;
   const resource_type = req.body.resource_type;
@@ -106,7 +107,7 @@ exports.approveResource = (req, res, next) => {
   })
     .then((result) => {
       DemandMaster.update({ status: 1 }, { where: { id: id } }).then((res1) => {
-        res1.status(201).json({
+        res.status(201).json({
           message: "Resource allocated successfully",
           user: result,
         });
