@@ -14,7 +14,10 @@ exports.createAOPRequest = (req, res, next) => {
   const project_stage = req.body.project_stage;
   const description = req.body.description;
   const budget = req.body.budget;
-  const approved_flag = req.body.approved_flag;
+  const start_date = req.body.start_date;
+  const end_date = req.body.end_date;
+  console.log(req.body.skills);
+  //   const approved_flag = req.body.approved_flag;
 
   AOPMaster.create({
     aop_code: aop_code,
@@ -26,25 +29,29 @@ exports.createAOPRequest = (req, res, next) => {
     project_stage: project_stage,
     description: description,
     budget: budget,
-    approved_flag: approved_flag,
+    start_date: start_date,
+    end_date: end_date,
+    approved_flag: 0,
   })
     .then((result) => {
-      req.body.skills
-        .forEach((ele) => {
-          RequestTable.create({
-            project_code: project_code,
-            band: ele.band,
-            resource_type: ele.resource_type,
-            skill: ele.skill,
-            no_of_employee: ele.no_of_employee,
-          });
+      req.body.skills.forEach((ele) => {
+        RequestTable.create({
+          project_code: project_code,
+          band: ele.band,
+          resource_type: ele.resource_type,
+          skill: ele.skill,
+          no_of_employee: ele.no_of_employee,
         })
-        .then((result) => {
-          res.status(201).json({
-            message: "AOP request created successfully!",
-            user: result,
+          .then((result) => {
+            res.status(201).json({
+              message: "AOP request created successfully!",
+              user: result,
+            });
+          })
+          .catch((err) => {
+            console.log(err);
           });
-        });
+      });
     })
     .catch((err) => {
       console.log(err);
@@ -92,7 +99,7 @@ exports.showOneAOP = (req, res, next) => {
 };
 
 exports.createAOPResourceRequest = (req, res, next) => {
-    console.log("called", req.body);
+  console.log("called", req.body);
   console.log("called1");
   const project_id = req.body.project_id;
   const employee_id = req.body.employee_id;

@@ -221,7 +221,7 @@ exports.checkBandwidth = (req, res, next) => {
   let employee_id = req.body.employee_id;
   AllocationMaster.findAll({ where: { employee_id: employee_id } }).then(
     (res1) => {
-      console.log("\\\\\\\\\\\\\\\\\\\\\\", res1);
+      // console.log("\\\\\\\\\\\\\\\\\\\\\\", res1);
       if (res1.length == 0) {
         res.status(200).json([
           [
