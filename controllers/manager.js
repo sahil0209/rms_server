@@ -133,13 +133,17 @@ exports.createAOPResourceRequest = (req, res, next) => {
     fiscal_year: fiscal_year,
     band: band,
     skill: skill,
-    resource_type: resource_type,
+    resource_type: resource_type
   })
     .then((result) => {
-      res.status(201).json({
-        message: "Demand request created successfully",
-        user: result,
-      });
+      AOPMaster
+      .update({approved_flag:2},{where:{project_code:project_id}})
+      .then((res1)=>{
+        res.status(201).json({
+          message: "Demand request created successfully",
+          user: res1,
+        });
+      })
     })
     .catch((err) => {
       console.log(err);
