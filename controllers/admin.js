@@ -8,10 +8,12 @@ const sequelize = require("../util/db");
 
 exports.declineAOPRequest = (req, res, next) => {
   const project_code = req.body.project_code;
+  const reason=req.body.reason;
 
   AOPMaster.update(
     {
       approved_flag: -1,
+      reason: reason
     },
     {
       where: { project_code: project_code },
@@ -33,10 +35,12 @@ exports.declineAOPRequest = (req, res, next) => {
 
 exports.acceptAOPRequest = (req, res, next) => {
   const project_code = req.body.project_code;
+  const reason=req.body.reason;
 
   AOPMaster.update(
     {
       approved_flag: 1,
+      reason: reason
     },
     {
       where: { project_code: project_code },
@@ -55,7 +59,8 @@ exports.acceptAOPRequest = (req, res, next) => {
 
 exports.rejectResource = (req, res, next) => {
   const id = req.body.demand_id;
-  DemandMaster.update({ status: -1 }, { where: { id: id } }).then((result) => {
+  const reason_text = req.body.reason;
+  DemandMaster.update({ status: -1,reason:reason_text }, { where: { id: id } }).then((result) => {
     res.status(200).json({
       message: "Resource allocation has been rejected",
       user: result,
@@ -66,6 +71,7 @@ exports.rejectResource = (req, res, next) => {
 exports.approveResource = (req, res, next) => {
   console.log(req.body);
   const id = req.body.id;
+  const reason = req.body.reason;
   const project_id = req.body.project_id;
   const employee_id = req.body.employee_id;
   const fiscal_year = req.body.fiscal_year;
@@ -106,7 +112,7 @@ exports.approveResource = (req, res, next) => {
     resource_type: resource_type,
   })
     .then((result) => {
-      DemandMaster.update({ status: 1 }, { where: { id: id } }).then((res1) => {
+      DemandMaster.update({ status: 1,reason:reason }, { where: { id: id } }).then((res1) => {
         res.status(201).json({
           message: "Resource allocated successfully",
           user: result,
