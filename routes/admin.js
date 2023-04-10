@@ -15,6 +15,7 @@ router.post("/showDemandByProjectId", controllers.showDemandByProjectId);
 router.get("/showAllDemand", controllers.showAllDemand);
 router.get("/showAllApprove", controllers.showAllApprove);
 router.post("/checkBandwidth", controllers.checkBandwidth);
+router.get("/showDashboardStats", controllers.showDashboardStats);
 router.get("/showAllAOP", controllers.showAllAOP);
 
 module.exports = router;

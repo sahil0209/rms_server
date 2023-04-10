@@ -301,3 +301,36 @@ exports.showAllAOP = (req, res, next) => {
     })
     .catch((err) => console.log(err));
 };
+
+exports.showDashboardStats = (req, res, next) => {
+  sequelize
+    .query(
+      `select count(*) as "AllAOPCount" from aop_masters where approved_flag != -1`
+    )
+    .then((allAOPCount) => {
+      sequelize
+        .query(
+          `select count(*) as "PendingAOPCount" from aop_masters where approved_flag = 0`
+        )
+        .then((pendingAOPCount) => {
+          sequelize
+            .query(
+              `select count(*) as "PendingResourceCount" from demand_masters where status = '0'`
+            )
+            .then((pendingResourceCount) => {
+              sequelize
+                .query(
+                  `select count(*) as "HireResourceCount" from demand_masters where employee_id = null`
+                )
+                .then((hireResourceCount) => {
+                  res.status(200).send({
+                    allAOPCount: allAOPCount[0],
+                    pendingAOPCount: pendingAOPCount[0],
+                    pendingResourceCount: pendingResourceCount[0],
+                    hireResourceCount: hireResourceCount[0],
+                  });
+                });
+            });
+        });
+    });
+};
