@@ -5,6 +5,7 @@ const EmployeeMaster = require("../models/employee_master");
 const AllocationMaster = require("../models/allocation_master");
 // const sequelize = require("sequelize");
 const sequelize = require("../util/db");
+const { where } = require("sequelize");
 
 exports.declineAOPRequest = (req, res, next) => {
   const project_code = req.body.project_code;
@@ -52,6 +53,8 @@ exports.acceptAOPRequest = (req, res, next) => {
       console.log(err);
     });
 };
+
+
 
 exports.rejectResource = (req, res, next) => {
   const id = req.body.demand_id;
@@ -134,12 +137,17 @@ exports.createEmployee = (req, res, next) => {
   })
     .then((result) => {
       res.status(201).json({
+        success: true,
         message: "Employee created successfully!",
         Employee: result,
       });
     })
     .catch((err) => {
-      console.log(err);
+      res.json({
+        success: false,
+        message: "Employee already exist",
+        error: err
+      })
     });
 };
 
@@ -301,3 +309,69 @@ exports.showAllAOP = (req, res, next) => {
     })
     .catch((err) => console.log(err));
 };
+
+
+exports.showAllEmployee=(req,res,next)=>{
+
+  EmployeeMaster.findAll()
+  .then((employee)=>{
+    res.status(200).json(employee);
+
+  })
+  
+  .catch((err) => console.log(err));
+
+}
+
+exports.showEmpId=(req,res,next)=>{
+EmployeeMaster.findAll({
+  
+  
+    attributes:['employee_id']
+  
+})
+.then((employee)=>{
+  res.status(200).json(employee);
+
+})
+
+.catch((err) => console.log(err));
+}
+
+
+
+
+
+
+exports.editEmployeeRequest = (req,res,next) => {
+
+  // const emp_id=req.body.employee_id;
+  
+
+  const emp_name = req.body.employee_name;
+  const emp_band = req.body.employee_band;
+  const resource_type = req.body.resource_type;
+  const emp_skill = req.body.employee_skill;
+
+  EmployeeMaster.update(
+    { 
+      employee_name:emp_name,
+      employee_band:emp_band,
+      resource_type:resource_type,
+      employee_skill:emp_skill
+    },
+    {
+      where:{
+        employee_id:req.body.employee_id
+      }
+
+    }
+  )
+  .then((employee)=>{
+    res.status(200).json({
+      message:"Employee Updated Successfully"
+    });
+  })
+  .catch((err) => console.log(err));
+
+}

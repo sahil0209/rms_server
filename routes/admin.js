@@ -16,5 +16,7 @@ router.get("/showAllDemand", controllers.showAllDemand);
 router.get("/showAllApprove", controllers.showAllApprove);
 router.post("/checkBandwidth", controllers.checkBandwidth);
 router.get("/showAllAOP", controllers.showAllAOP);
-
+router.get("/showAllEmployee",controllers.showAllEmployee);
+router.put("/updateEmployeeRecord",controllers.editEmployeeRequest);
+router.get("/showEmpId",controllers.showEmpId);
 module.exports = router;
