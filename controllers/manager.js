@@ -241,6 +241,7 @@ exports.editAOPResourceRequest = (req, res, next) => {
       october: oct,
       november: nov,
       december: dec,
+      status: 0,
     },
     { where: { id: id } }
   )
