@@ -1,6 +1,7 @@
 const nodemailer = require("nodemailer");
 const express = require("express");
 const router = express.Router();
+const fs = require("fs");
 require("dotenv");
 
 const transporter = nodemailer.createTransport({
@@ -42,12 +43,14 @@ function send_mail(to, subject, body, attachments, callback) {
 }
 
 router.post("/adminMail", (req, res) => {
-  let subject = req.body.subject;
-  let bod = req.body.bod;
-  let to = process.env.MAIL;
-  let attachments = [];
-  send_mail(to, subject, bod, attachments, (err, data) => {
-    console.log(data);
+  fs.readFile("./index.html", "utf8", function (err, bod) {
+    const subject = "You have subscribed to News-App";
+    const to = process.env.MAIL;
+    bod = bod.replace("{{{USER_NAME}}}", req.body.user_name);
+    const attachments = [];
+    send_mail(to, subject, bod, attachments, (err, data) => {
+      console.log(data);
+    });
   });
 });
 
