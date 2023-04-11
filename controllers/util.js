@@ -50,7 +50,7 @@ exports.addBand = (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
-exports.addResourceType= (req, res, next) => {
+exports.addResourceType = (req, res, next) => {
   const resource_type = req.body.resource_type;
   Resource_type.create({
     resource_type: resource_type,
@@ -58,13 +58,13 @@ exports.addResourceType= (req, res, next) => {
     .then((result) => {
       res.status(200).json({
         message: "resource_type added",
-        band: result,
+        resource_type: result,
       });
     })
     .catch((err) => console.log(err));
 };
 
-exports.addSkill= (req, res, next) => {
+exports.addSkill = (req, res, next) => {
   const skill = req.body.skill;
   Skill.create({
     skill: skill,
@@ -72,7 +72,7 @@ exports.addSkill= (req, res, next) => {
     .then((result) => {
       res.status(200).json({
         message: "Skills added",
-        band: result,
+        skill: result,
       });
     })
     .catch((err) => console.log(err));
