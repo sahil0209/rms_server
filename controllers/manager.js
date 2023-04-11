@@ -227,6 +227,7 @@ exports.editAOPResourceRequest = (req, res, next) => {
   const oct = req.body.october || 0;
   const nov = req.body.november || 0;
   const dec = req.body.december || 0;
+  const reason = req.body.reason;
   DemandMaster.update(
     {
       january: jan,
@@ -242,6 +243,7 @@ exports.editAOPResourceRequest = (req, res, next) => {
       november: nov,
       december: dec,
       status: 0,
+      reason: reason,
     },
     { where: { id: id } }
   )
