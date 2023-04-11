@@ -138,17 +138,18 @@ exports.createAOPResourceRequest = (req, res, next) => {
     fiscal_year: fiscal_year,
     band: band,
     skill: skill,
-    resource_type: resource_type
+    resource_type: resource_type,
   })
     .then((result) => {
-      AOPMaster
-        .update({ approved_flag: 2 }, { where: { project_code: project_id } })
-        .then((res1) => {
-          res.status(201).json({
-            message: "Demand request created successfully",
-            user: res1,
-          });
-        })
+      AOPMaster.update(
+        { approved_flag: 2 },
+        { where: { project_code: project_id } }
+      ).then((res1) => {
+        res.status(201).json({
+          message: "Demand request created successfully",
+          user: res1,
+        });
+      });
     })
     .catch((err) => {
       console.log(err);
@@ -192,12 +193,13 @@ exports.getEmployeeBandAndSkill = (req, res, next) => {
   const band = req.body.band;
   const skill = req.body.skill;
   const employee_secondary_skill = req.body.employee_secondary_skill;
+  const resource_type = req.body.resource_type;
 
   EmployeeMaster.findAll({
     where: {
       employee_band: band,
       employee_skill: skill,
-      
+      resource_type: resource_type,
       // employee_secondary_skill: employee_secondary_skill,
     },
   })
@@ -209,8 +211,6 @@ exports.getEmployeeBandAndSkill = (req, res, next) => {
     .catch((err) => {
       console.log(err);
     });
-
- 
 };
 
 exports.editAOPResourceRequest = (req, res, next) => {
@@ -240,14 +240,13 @@ exports.editAOPResourceRequest = (req, res, next) => {
       september: sep,
       october: oct,
       november: nov,
-      december: dec
+      december: dec,
     },
     { where: { id: id } }
   )
     .then((result) => {
       res.status(201).json({
         message: "Demand request updated successfully",
-
       });
     })
     .catch((err) => {
@@ -292,53 +291,54 @@ exports.createAdditionalAOPResourceRequest = (req, res, next) => {
     fiscal_year: fiscal_year,
     band: band,
     skill: skill,
-    resource_type: resource_type
+    resource_type: resource_type,
   })
     .then((result) => {
-      AOPMaster
-        .update({ approved_flag: 2 }, { where: { project_code: project_id } })
-        .then((res1) => {
-          res.status(201).json({
-            message: "Demand request created successfully",
-          });
+      AOPMaster.update(
+        { approved_flag: 2 },
+        { where: { project_code: project_id } }
+      ).then((res1) => {
+        res.status(201).json({
+          message: "Demand request created successfully",
         });
+      });
 
       RequestTable.findAll({
         where: {
           band: band,
           resource_type: resource_type,
-          skill: skill
-        }
+          skill: skill,
+        },
       }).then((data) => {
         if (data.length === 0) {
-          RequestTable.create(
+          RequestTable.create({
+            project_code: project_id,
+            band: band,
+            resource_type: resource_type,
+            skill: skill,
+            no_of_employee: 1,
+          });
+        } else {
+          RequestTable.update(
             {
-              project_code: project_id,
-              band: band,
-              resource_type: resource_type,
-              skill: skill,
-              no_of_employee: 1
+              no_of_employee: Sequelize.literal("no_of_employee + 1"),
+            },
+            {
+              where: {
+                project_code: project_id,
+                band: band,
+                resource_type: resource_type,
+                skill: skill,
+              },
             }
-          )
-        }
-        else {
-          RequestTable.update({
-            no_of_employee: Sequelize.literal('no_of_employee + 1')
-          }, {
-            where: {
-              project_code: project_id,
-              band: band,
-              resource_type: resource_type,
-              skill: skill,
-            }
-          })
+          );
         }
       });
     })
     .catch((err) => {
       console.log(err);
     });
-}
+};
 
 exports.deleteAOPResource = (req, res, next) => {
   const project_id = req.body.project_id;
@@ -347,41 +347,48 @@ exports.deleteAOPResource = (req, res, next) => {
   const resource_type = req.body.resource_type;
   const skill = req.body.skill;
   DemandMaster.destroy({
-    where: { project_id: project_id, employee_id: employee_id }
-  }).then((data) => {
-    AllocationMaster.destroy({
-      where: { project_id: project_id, employee_id: employee_id }
-    }).then((result) => {
-      RequestTable.findAll({
-        where: {
-          band: band,
-          resource_type: resource_type,
-          skill: skill
-        }
-      }).then((data) => {
-        RequestTable.update({
-          no_of_employee: Sequelize.literal('no_of_employee - 1')
-        }, {
-          where: {
-            project_code: project_id,
-            band: band,
-            resource_type: resource_type,
-            skill: skill,
-          }
-        }).then((data) => {
-          res.status(201).json({
-            message: "Demand request deleted successfully",
-          });
-        })
-      }).catch((err) => {
-        console.log(err);
-      })
-    })
-      .catch((err) => {
-        console.log(err);
-      });
-
-  }).catch((err) => {
-    console.log(err);
+    where: { project_id: project_id, employee_id: employee_id },
   })
+    .then((data) => {
+      AllocationMaster.destroy({
+        where: { project_id: project_id, employee_id: employee_id },
+      })
+        .then((result) => {
+          RequestTable.findAll({
+            where: {
+              band: band,
+              resource_type: resource_type,
+              skill: skill,
+            },
+          })
+            .then((data) => {
+              RequestTable.update(
+                {
+                  no_of_employee: Sequelize.literal("no_of_employee - 1"),
+                },
+                {
+                  where: {
+                    project_code: project_id,
+                    band: band,
+                    resource_type: resource_type,
+                    skill: skill,
+                  },
+                }
+              ).then((data) => {
+                res.status(201).json({
+                  message: "Demand request deleted successfully",
+                });
+              });
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
