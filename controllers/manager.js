@@ -186,11 +186,13 @@ exports.fillAOPResourceRequest = (req, res, next) => {
 exports.getEmployeeBandAndSkill = (req, res, next) => {
   const band = req.body.band;
   const skill = req.body.skill;
+  const employee_secondary_skill = req.body.employee_secondary_skill;
 
   EmployeeMaster.findAll({
     where: {
       employee_band: band,
       employee_skill: skill,
+      // employee_secondary_skill: employee_secondary_skill,
     },
   })
     .then((result) => {
