@@ -73,6 +73,9 @@ const demandMaster = db.define("demand_master", {
     type: Sequelize.STRING,
     defaultValue: 0,
   },
+  reason:{
+    type: Sequelize.STRING,
+  }
 });
 
 module.exports = demandMaster;

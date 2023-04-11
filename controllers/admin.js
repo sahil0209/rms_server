@@ -9,10 +9,12 @@ const { where } = require("sequelize");
 
 exports.declineAOPRequest = (req, res, next) => {
   const project_code = req.body.project_code;
+  const reason=req.body.reason;
 
   AOPMaster.update(
     {
       approved_flag: -1,
+      reason: reason
     },
     {
       where: { project_code: project_code },
@@ -34,10 +36,12 @@ exports.declineAOPRequest = (req, res, next) => {
 
 exports.acceptAOPRequest = (req, res, next) => {
   const project_code = req.body.project_code;
+  const reason=req.body.reason;
 
   AOPMaster.update(
     {
       approved_flag: 1,
+      reason: reason
     },
     {
       where: { project_code: project_code },
@@ -58,7 +62,8 @@ exports.acceptAOPRequest = (req, res, next) => {
 
 exports.rejectResource = (req, res, next) => {
   const id = req.body.demand_id;
-  DemandMaster.update({ status: -1 }, { where: { id: id } }).then((result) => {
+  const reason_text = req.body.reason;
+  DemandMaster.update({ status: -1,reason:reason_text }, { where: { id: id } }).then((result) => {
     res.status(200).json({
       message: "Resource allocation has been rejected",
       user: result,
@@ -69,6 +74,7 @@ exports.rejectResource = (req, res, next) => {
 exports.approveResource = (req, res, next) => {
   console.log(req.body);
   const id = req.body.id;
+  const reason = req.body.reason;
   const project_id = req.body.project_id;
   const employee_id = req.body.employee_id;
   const fiscal_year = req.body.fiscal_year;
@@ -109,7 +115,7 @@ exports.approveResource = (req, res, next) => {
     resource_type: resource_type,
   })
     .then((result) => {
-      DemandMaster.update({ status: 1 }, { where: { id: id } }).then((res1) => {
+      DemandMaster.update({ status: 1,reason:reason }, { where: { id: id } }).then((res1) => {
         res.status(201).json({
           message: "Resource allocated successfully",
           user: result,
@@ -127,6 +133,7 @@ exports.createEmployee = (req, res, next) => {
   const employee_band = req.body.employee_band;
   const resource_type = req.body.resource_type;
   const employee_skill = req.body.employee_skill;
+  const employee_secondary_skill = req.body.employee_secondary_skill;
 
   EmployeeMaster.create({
     employee_id: employee_id,
@@ -134,6 +141,7 @@ exports.createEmployee = (req, res, next) => {
     employee_band: employee_band,
     resource_type: resource_type,
     employee_skill: employee_skill,
+    employee_secondary_skill: employee_secondary_skill,
   })
     .then((result) => {
       res.status(201).json({
@@ -151,59 +159,7 @@ exports.createEmployee = (req, res, next) => {
     });
 };
 
-exports.editAOPResourceRequest = (req, res, next) => {
-  const id = req.body.id;
-  // const project_id = req.body.project_id;
-  // const employee_id = req.body.employee_id;
-  const jan = req.body.january || 0;
-  const feb = req.body.february || 0;
-  const mar = req.body.march || 0;
-  const apr = req.body.april || 0;
-  const may = req.body.may || 0;
-  const jun = req.body.june || 0;
-  const jul = req.body.july || 0;
-  const aug = req.body.august || 0;
-  const sep = req.body.september || 0;
-  const oct = req.body.october || 0;
-  const nov = req.body.november || 0;
-  const dec = req.body.december || 0;
-  // const fiscal_year = req.body.fiscal_year;
-  // const band = req.body.band;
-  // const skill = req.body.skill;
-  // const resource_type = req.body.resource_type;
-  DemandMaster.update(
-    {
-      // project_id: project_id,
-      // employee_id: employee_id,
-      january: jan,
-      february: feb,
-      march: mar,
-      april: apr,
-      may: may,
-      june: jun,
-      july: jul,
-      august: aug,
-      september: sep,
-      october: oct,
-      november: nov,
-      december: dec,
-      // fiscal_year: fiscal_year,
-      // band: band,
-      // skill: skill,
-      // resource_type: resource_type,
-    },
-    { where: { id: id } }
-  )
-    .then((result) => {
-      res.status(201).json({
-        message: "Demand request created successfully",
-        user: result,
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-};
+
 
 exports.showAllDemand = (req, res, next) => {
   DemandMaster.findAll()
@@ -375,3 +331,35 @@ exports.editEmployeeRequest = (req,res,next) => {
   .catch((err) => console.log(err));
 
 }
+exports.showDashboardStats = (req, res, next) => {
+    sequelize
+      .query(
+        `select count(*) as "AllAOPCount" from aop_masters where approved_flag != -1`
+      )
+      .then((allAOPCount) => {
+        sequelize
+          .query(
+            `select count(*) as "PendingAOPCount" from aop_masters where approved_flag = 0`
+          )
+          .then((pendingAOPCount) => {
+            sequelize
+              .query(
+                `select count(*) as "PendingResourceCount" from demand_masters where status = '0'`
+              )
+              .then((pendingResourceCount) => {
+                sequelize
+                  .query(
+                    `select count(*) as "HireResourceCount" from demand_masters where employee_id = null`
+                  )
+                  .then((hireResourceCount) => {
+                    res.status(200).send({
+                      allAOPCount: allAOPCount[0],
+                      pendingAOPCount: pendingAOPCount[0],
+                      pendingResourceCount: pendingResourceCount[0],
+                      hireResourceCount: hireResourceCount[0],
+                    });
+                  });
+              });
+          });
+      });
+  };

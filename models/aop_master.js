@@ -39,6 +39,9 @@ const AopMaster = db.define("aop_master", {
   },
   end_date: {
     type: Sequelize.DATEONLY,
+  },
+  reason: {
+    type: Sequelize.STRING,
   }
 });
 

@@ -22,6 +22,9 @@ const employeeMaster = db.define("employee_master", {
   employee_skill: {
     type: Sequelize.STRING,
   },
+  employee_secondary_skill: {
+    type: Sequelize.STRING,
+  },
 });
 
 module.exports = employeeMaster;

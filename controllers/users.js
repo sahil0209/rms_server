@@ -31,7 +31,7 @@ exports.loginUser = (req, res, next) => {
     },
   })
     .then(async (result) => {
-    //   console.log("Result Acquired is", result[0]);
+      //   console.log("Result Acquired is", result[0]);
       let isCorrected = await bcrypt.compare(
         req.body.password,
         result[0].password
@@ -39,7 +39,7 @@ exports.loginUser = (req, res, next) => {
       if (isCorrected) {
         res.status(200).json({
           message: "Success",
-            user: result,
+          user: result,
         });
       } else {
         res.status(200).json({
@@ -54,3 +54,22 @@ exports.loginUser = (req, res, next) => {
       });
     });
 };
+
+// const ldap = require("ldapjs");
+
+// const client = ldap.createClient({
+//   url: "ldap://your-ldap-server-url",
+// });
+
+// exports.signIn = (req, res, next) => {
+//   userName = req.body.username;
+//   password = req.body.password;
+//   const dn = `uid=${username},ou=users,dc=example,dc=com`;
+//   client.bind(dn, password, (err) => {
+//     if (err) {
+//       res.status(401).json({ message: "Invalid username or password" });
+//     } else {
+//       res.status(200).json({ message: "Authentication successful" });
+//     }
+//   });
+// };
