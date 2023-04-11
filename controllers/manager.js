@@ -209,6 +209,8 @@ exports.getEmployeeBandAndSkill = (req, res, next) => {
     .catch((err) => {
       console.log(err);
     });
+
+ 
 };
 
 exports.editAOPResourceRequest = (req, res, next) => {
