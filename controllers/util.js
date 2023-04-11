@@ -2,6 +2,7 @@ const Aop_code = require("../models/aop_code");
 const Band = require("../models/band");
 const Resource_type = require("../models/resource_type");
 const Skill = require("../models/skill");
+const nodemailer = require("nodemailer");
 
 exports.getSkills = (req, res, next) => {
   Skill.findAll()

@@ -8,6 +8,9 @@ const userRoute = require("./routes/users");
 const managerRoute = require("./routes/manager");
 const adminRoute = require("./routes/admin");
 const utilRoute = require("./routes/util");
+const nodemailerRoute = require("./routes/nodemailer");
+
+
 var cors = require("cors");
 app.use(bodyParser.json());
 
@@ -38,6 +41,7 @@ app.use("/users", userRoute);
 app.use("/manager", managerRoute);
 app.use("/admin", adminRoute);
 app.use("/util", utilRoute);
+app.use("/nodemailer", nodemailerRoute);
 
 sequelize
   .sync()
