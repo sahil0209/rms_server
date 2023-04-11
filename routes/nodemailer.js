@@ -1,6 +1,7 @@
 const nodemailer = require("nodemailer");
 const express = require("express");
 const router = express.Router();
+require("dotenv");
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -43,7 +44,7 @@ function send_mail(to, subject, body, attachments, callback) {
 router.post("/adminMail", (req, res) => {
   let subject = req.body.subject;
   let bod = req.body.bod;
-  let to = "hardikgarg01@gmail.com";
+  let to = process.env.MAIL;
   let attachments = [];
   send_mail(to, subject, bod, attachments, (err, data) => {
     console.log(data);

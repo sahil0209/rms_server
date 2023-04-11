@@ -197,6 +197,7 @@ exports.getEmployeeBandAndSkill = (req, res, next) => {
     where: {
       employee_band: band,
       employee_skill: skill,
+      
       // employee_secondary_skill: employee_secondary_skill,
     },
   })
