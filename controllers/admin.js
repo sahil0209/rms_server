@@ -130,6 +130,7 @@ exports.createEmployee = (req, res, next) => {
   const employee_band = req.body.employee_band;
   const resource_type = req.body.resource_type;
   const employee_skill = req.body.employee_skill;
+  const employee_secondary_skill = req.body.employee_secondary_skill;
 
   EmployeeMaster.create({
     employee_id: employee_id,
@@ -137,6 +138,7 @@ exports.createEmployee = (req, res, next) => {
     employee_band: employee_band,
     resource_type: resource_type,
     employee_skill: employee_skill,
+    employee_secondary_skill: employee_secondary_skill,
   })
     .then((result) => {
       res.status(201).json({
