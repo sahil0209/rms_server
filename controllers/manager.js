@@ -4,6 +4,7 @@ const DemandMaster = require("../models/demand_master");
 const AllocationMaster = require("../models/allocation_master");
 const EmployeeMaster = require("../models/employee_master");
 const Sequelize = require("sequelize");
+const allocationMaster = require("../models/allocation_master");
 
 exports.createAOPRequest = (req, res, next) => {
   const aop_code = req.body.aop_code;
@@ -292,7 +293,7 @@ exports.createAdditionalAOPResourceRequest = (req, res, next) => {
   })
     .then((result) => {
       AOPMaster.update(
-        { approved_flag: 2 },
+        { approved_flag: 1 },
         { where: { project_code: project_id } }
       ).then((res1) => {
         res.status(201).json({
@@ -407,9 +408,21 @@ exports.addEmployeeAgainstExisting = (req, res, next) => {
     }
   )
     .then((result) => {
-      res.status(201).json({
-        message: "New employee added against previous employee",
+      DemandMaster.findAll({
+        where: { id: id },
+      }).then((result1) => {
+        AOPMaster.update(
+          { approved_flag: 1 },
+          { where: { project_code: result1[0].project_id } }
+        ).then((res1) => {
+          res.status(201).json({
+            message: "New employee added against previous employee",
+          });
+        });
       });
+      // res.status(201).json({
+      //   message: "New employee added against previous employee",
+      // });
     })
     .catch((err) => {
       console.log(err);
