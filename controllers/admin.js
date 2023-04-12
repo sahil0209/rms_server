@@ -9,12 +9,12 @@ const { where } = require("sequelize");
 
 exports.declineAOPRequest = (req, res, next) => {
   const project_code = req.body.project_code;
-  const reason=req.body.reason;
+  const reason = req.body.reason;
 
   AOPMaster.update(
     {
       approved_flag: -1,
-      reason: reason
+      reason: reason,
     },
     {
       where: { project_code: project_code },
@@ -36,12 +36,12 @@ exports.declineAOPRequest = (req, res, next) => {
 
 exports.acceptAOPRequest = (req, res, next) => {
   const project_code = req.body.project_code;
-  const reason=req.body.reason;
+  const reason = req.body.reason;
 
   AOPMaster.update(
     {
       approved_flag: 1,
-      reason: reason
+      reason: reason,
     },
     {
       where: { project_code: project_code },
@@ -58,12 +58,13 @@ exports.acceptAOPRequest = (req, res, next) => {
     });
 };
 
-
-
 exports.rejectResource = (req, res, next) => {
   const id = req.body.demand_id;
   const reason_text = req.body.reason;
-  DemandMaster.update({ status: -1,reason:reason_text }, { where: { id: id } }).then((result) => {
+  DemandMaster.update(
+    { status: -1, reason: reason_text },
+    { where: { id: id } }
+  ).then((result) => {
     res.status(200).json({
       message: "Resource allocation has been rejected",
       user: result,
@@ -73,25 +74,25 @@ exports.rejectResource = (req, res, next) => {
 
 exports.approveResource = (req, res, next) => {
   console.log(req.body);
-  const id = req.body.id;
+  const id = req.body.data.id;
   const reason = req.body.reason;
-  const project_id = req.body.project_id;
-  const employee_id = req.body.employee_id;
-  const fiscal_year = req.body.fiscal_year;
-  const jan = req.body.january;
-  const feb = req.body.february;
-  const mar = req.body.march;
-  const apr = req.body.april;
-  const may = req.body.may;
-  const jun = req.body.june;
-  const jul = req.body.july;
-  const aug = req.body.august;
-  const sep = req.body.september;
-  const oct = req.body.october;
-  const nov = req.body.november;
-  const dec = req.body.december;
-  const band = req.body.band;
-  const skill = req.body.skill;
+  const project_id = req.body.data.project_id;
+  const employee_id = req.body.data.employee_id;
+  const fiscal_year = req.body.data.fiscal_year;
+  const jan = req.body.data.january;
+  const feb = req.body.data.february;
+  const mar = req.body.data.march;
+  const apr = req.body.data.april;
+  const may = req.body.data.may;
+  const jun = req.body.data.june;
+  const jul = req.body.data.july;
+  const aug = req.body.data.august;
+  const sep = req.body.data.september;
+  const oct = req.body.data.october;
+  const nov = req.body.data.november;
+  const dec = req.body.data.december;
+  const band = req.body.data.band;
+  const skill = req.body.data.skill;
   const resource_type = req.body.resource_type;
 
   AllocationMaster.create({
@@ -115,7 +116,10 @@ exports.approveResource = (req, res, next) => {
     resource_type: resource_type,
   })
     .then((result) => {
-      DemandMaster.update({ status: 1,reason:reason }, { where: { id: id } }).then((res1) => {
+      DemandMaster.update(
+        { status: 1, reason: reason },
+        { where: { id: id } }
+      ).then((res1) => {
         res.status(201).json({
           message: "Resource allocated successfully",
           user: result,
@@ -154,12 +158,10 @@ exports.createEmployee = (req, res, next) => {
       res.json({
         success: false,
         message: "Employee already exist",
-        error: err
-      })
+        error: err,
+      });
     });
 };
-
-
 
 exports.showAllDemand = (req, res, next) => {
   DemandMaster.findAll()
@@ -266,100 +268,85 @@ exports.showAllAOP = (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
-
-exports.showAllEmployee=(req,res,next)=>{
-
+exports.showAllEmployee = (req, res, next) => {
   EmployeeMaster.findAll()
-  .then((employee)=>{
-    res.status(200).json(employee);
+    .then((employee) => {
+      res.status(200).json(employee);
+    })
 
+    .catch((err) => console.log(err));
+};
+
+exports.showEmpId = (req, res, next) => {
+  EmployeeMaster.findAll({
+    attributes: ["employee_id"],
   })
-  
-  .catch((err) => console.log(err));
+    .then((employee) => {
+      res.status(200).json(employee);
+    })
 
-}
+    .catch((err) => console.log(err));
+};
 
-exports.showEmpId=(req,res,next)=>{
-EmployeeMaster.findAll({
-  
-  
-    attributes:['employee_id']
-  
-})
-.then((employee)=>{
-  res.status(200).json(employee);
-
-})
-
-.catch((err) => console.log(err));
-}
-
-
-
-
-
-
-exports.editEmployeeRequest = (req,res,next) => {
-
+exports.editEmployeeRequest = (req, res, next) => {
   // const emp_id=req.body.employee_id;
-  
 
   const emp_name = req.body.employee_name;
   const emp_band = req.body.employee_band;
   const resource_type = req.body.resource_type;
   const emp_skill = req.body.employee_skill;
+  const emp_sec_skill = req.body.employee_secondary.skill;
 
   EmployeeMaster.update(
-    { 
-      employee_name:emp_name,
-      employee_band:emp_band,
-      resource_type:resource_type,
-      employee_skill:emp_skill
+    {
+      employee_name: emp_name,
+      employee_band: emp_band,
+      resource_type: resource_type,
+      employee_skill: emp_skill,
+      employee_secondary_skill: emp_sec_skill,
     },
     {
-      where:{
-        employee_id:req.body.employee_id
-      }
-
+      where: {
+        employee_id: req.body.employee_id,
+      },
     }
   )
-  .then((employee)=>{
-    res.status(200).json({
-      message:"Employee Updated Successfully"
-    });
-  })
-  .catch((err) => console.log(err));
-
-}
-exports.showDashboardStats = (req, res, next) => {
-    sequelize
-      .query(
-        `select count(*) as "AllAOPCount" from aop_masters where approved_flag != -1`
-      )
-      .then((allAOPCount) => {
-        sequelize
-          .query(
-            `select count(*) as "PendingAOPCount" from aop_masters where approved_flag = 0`
-          )
-          .then((pendingAOPCount) => {
-            sequelize
-              .query(
-                `select count(*) as "PendingResourceCount" from demand_masters where status = '0'`
-              )
-              .then((pendingResourceCount) => {
-                sequelize
-                  .query(
-                    `select count(*) as "HireResourceCount" from demand_masters where employee_id = null`
-                  )
-                  .then((hireResourceCount) => {
-                    res.status(200).send({
-                      allAOPCount: allAOPCount[0],
-                      pendingAOPCount: pendingAOPCount[0],
-                      pendingResourceCount: pendingResourceCount[0],
-                      hireResourceCount: hireResourceCount[0],
-                    });
-                  });
-              });
-          });
+    .then((employee) => {
+      res.status(200).json({
+        message: "Employee Updated Successfully",
       });
-  };
+    })
+    .catch((err) => console.log(err));
+};
+exports.showDashboardStats = (req, res, next) => {
+  sequelize
+    .query(
+      `select count(*) as "AllAOPCount" from aop_masters where approved_flag != -1`
+    )
+    .then((allAOPCount) => {
+      sequelize
+        .query(
+          `select count(*) as "PendingAOPCount" from aop_masters where approved_flag = 0`
+        )
+        .then((pendingAOPCount) => {
+          sequelize
+            .query(
+              `select count(*) as "PendingResourceCount" from demand_masters where status = '0'`
+            )
+            .then((pendingResourceCount) => {
+              sequelize
+                .query(
+                  `select count(*) as "HireResourceCount" from demand_masters where employee_id = null`
+                )
+                .then((hireResourceCount) => {
+                  res.status(200).send({
+                    allAOPCount: allAOPCount[0],
+                    pendingAOPCount: pendingAOPCount[0],
+                    pendingResourceCount: pendingResourceCount[0],
+                    hireResourceCount: hireResourceCount[0],
+                  });
+                });
+            });
+        });
+    });
+};
