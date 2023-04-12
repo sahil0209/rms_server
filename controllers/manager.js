@@ -389,3 +389,29 @@ exports.deleteAOPResource = (req, res, next) => {
       console.log(err);
     });
 };
+
+exports.addEmployeeAgainstExisting = (req, res, next) => {
+  const id = req.body.id;
+  const employee_id = req.body.employee_id;
+  const reason = req.body.reason;
+  DemandMaster.update(
+    {
+      reason: reason,
+      employee_id: employee_id,
+      status: 0,
+    },
+    {
+      where: {
+        id: id,
+      },
+    }
+  )
+    .then((result) => {
+      res.status(201).json({
+        message: "New employee added against previous employee",
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};

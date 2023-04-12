@@ -313,6 +313,7 @@ exports.editEmployeeRequest = (req, res, next) => {
   )
     .then((employee) => {
       res.status(200).json({
+        success: true,
         message: "Employee Updated Successfully",
       });
     })
