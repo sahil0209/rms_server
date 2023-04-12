@@ -20,5 +20,5 @@ router.get("/showAllEmployee",controllers.showAllEmployee);
 router.put("/updateEmployeeRecord",controllers.editEmployeeRequest);
 router.get("/showEmpId",controllers.showEmpId);
 router.get("/showDashboardStats", controllers.showDashboardStats);
-
+router.post("/destroyemployee",controllers.destroyEmployee);
 module.exports = router;

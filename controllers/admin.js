@@ -382,3 +382,18 @@ exports.showDashboardStats = (req, res, next) => {
         });
     });
 };
+
+exports.destroyEmployee = (req, res, next) => {
+  EmployeeMaster.destroy({
+    where: {
+      employee_id: req.body.employee_id,
+    },
+  })
+    .then((employee) => {
+      res.status(200).json({
+        success: true,
+        message: "Employee Deleted Successfully",
+      });
+    })
+    .catch((err) => console.log(err));
+};
