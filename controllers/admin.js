@@ -295,7 +295,7 @@ exports.editEmployeeRequest = (req, res, next) => {
   const emp_band = req.body.employee_band;
   const resource_type = req.body.resource_type;
   const emp_skill = req.body.employee_skill;
-  const emp_sec_skill = req.body.employee_secondary.skill;
+  const emp_sec_skill = req.body.employee_secondary_skill;
 
   EmployeeMaster.update(
     {
