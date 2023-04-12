@@ -4,6 +4,7 @@ const DemandMaster = require("../models/demand_master");
 const AllocationMaster = require("../models/allocation_master");
 const EmployeeMaster = require("../models/employee_master");
 const Sequelize = require("sequelize");
+const allocationMaster = require("../models/allocation_master");
 
 exports.createAOPRequest = (req, res, next) => {
   const aop_code = req.body.aop_code;
@@ -260,37 +261,31 @@ exports.editAOPResourceRequest = (req, res, next) => {
 exports.createAdditionalAOPResourceRequest = (req, res, next) => {
   const project_id = req.body.project_id;
   const employee_id = req.body.employee_id;
-  const jan = req.body.jan || 0;
-  const feb = req.body.feb || 0;
-  const mar = req.body.mar || 0;
-  const apr = req.body.apr || 0;
-  const may = req.body.may || 0;
-  const jun = req.body.jun || 0;
-  const jul = req.body.jul || 0;
-  const aug = req.body.aug || 0;
-  const sep = req.body.sep || 0;
-  const oct = req.body.oct || 0;
-  const nov = req.body.nov || 0;
-  const dec = req.body.dec || 0;
+  const start_month = req.body.start_month;
+  const end_month = req.body.end_month;
   const fiscal_year = req.body.fiscal_year;
   const band = req.body.band;
   const skill = req.body.skill;
   const resource_type = req.body.resource_type;
+  const emp_bandwith = new Array(12).fill(0);
+  for (let i = start_month - 1; i < end_month; i++) {
+    emp_bandwith[i] = 100;
+  }
   DemandMaster.create({
     project_id: project_id,
     employee_id: employee_id,
-    january: jan,
-    february: feb,
-    march: mar,
-    april: apr,
-    may: may,
-    june: jun,
-    july: jul,
-    august: aug,
-    september: sep,
-    october: oct,
-    november: nov,
-    december: dec,
+    january: emp_bandwith[0],
+    february: emp_bandwith[1],
+    march: emp_bandwith[2],
+    april: emp_bandwith[3],
+    may: emp_bandwith[4],
+    june: emp_bandwith[5],
+    july: emp_bandwith[6],
+    august: emp_bandwith[7],
+    september: emp_bandwith[8],
+    october: emp_bandwith[9],
+    november: emp_bandwith[10],
+    december: emp_bandwith[11],
     fiscal_year: fiscal_year,
     band: band,
     skill: skill,
@@ -298,7 +293,7 @@ exports.createAdditionalAOPResourceRequest = (req, res, next) => {
   })
     .then((result) => {
       AOPMaster.update(
-        { approved_flag: 2 },
+        { approved_flag: 1 },
         { where: { project_code: project_id } }
       ).then((res1) => {
         res.status(201).json({
@@ -413,9 +408,21 @@ exports.addEmployeeAgainstExisting = (req, res, next) => {
     }
   )
     .then((result) => {
-      res.status(201).json({
-        message: "New employee added against previous employee",
+      DemandMaster.findAll({
+        where: { id: id },
+      }).then((result1) => {
+        AOPMaster.update(
+          { approved_flag: 1 },
+          { where: { project_code: result1[0].project_id } }
+        ).then((res1) => {
+          res.status(201).json({
+            message: "New employee added against previous employee",
+          });
+        });
       });
+      // res.status(201).json({
+      //   message: "New employee added against previous employee",
+      // });
     })
     .catch((err) => {
       console.log(err);

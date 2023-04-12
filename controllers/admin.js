@@ -58,9 +58,40 @@ exports.acceptAOPRequest = (req, res, next) => {
     });
 };
 
-exports.rejectResource = (req, res, next) => {
+function func(id) {
+  DemandMaster.findAll({
+    where: { id: id },
+  }).then((result1) => {
+    // console.log("result1", result1[0]);
+    DemandMaster.findAll({
+      where: {
+        project_id: result1[0].project_id,
+        status: "0",
+      },
+    }).then((result) => {
+      // console.log(result[0]);
+      if (result.length <= 1) {
+        AOPMaster.update(
+          {
+            approved_flag: 2,
+          },
+          {
+            where: {
+              project_code: result1[0].project_id,
+            },
+          }
+        ).then(() => {
+          return "something";
+        });
+      }
+    });
+  });
+}
+
+exports.rejectResource = async (req, res, next) => {
   const id = req.body.demand_id;
   const reason_text = req.body.reason;
+  await func(id);
   DemandMaster.update(
     { status: -1, reason: reason_text },
     { where: { id: id } }
@@ -72,7 +103,7 @@ exports.rejectResource = (req, res, next) => {
   });
 };
 
-exports.approveResource = (req, res, next) => {
+exports.approveResource = async (req, res, next) => {
   console.log(req.body);
   const id = req.body.data.id;
   const reason = req.body.reason;
@@ -94,7 +125,7 @@ exports.approveResource = (req, res, next) => {
   const band = req.body.data.band;
   const skill = req.body.data.skill;
   const resource_type = req.body.resource_type;
-
+  await func(id);
   AllocationMaster.create({
     project_id: project_id,
     employee_id: employee_id,
@@ -313,6 +344,7 @@ exports.editEmployeeRequest = (req, res, next) => {
   )
     .then((employee) => {
       res.status(200).json({
+        success: true,
         message: "Employee Updated Successfully",
       });
     })
