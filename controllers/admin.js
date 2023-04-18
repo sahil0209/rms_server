@@ -5,7 +5,8 @@ const EmployeeMaster = require("../models/employee_master");
 const AllocationMaster = require("../models/allocation_master");
 // const sequelize = require("sequelize");
 const sequelize = require("../util/db");
-const { where } = require("sequelize");
+const { where, Sequelize } = require("sequelize");
+const e = require("express");
 
 exports.declineAOPRequest = (req, res, next) => {
   const project_code = req.body.project_code;
@@ -169,6 +170,13 @@ exports.createEmployee = (req, res, next) => {
   const resource_type = req.body.resource_type;
   const employee_skill = req.body.employee_skill;
   const employee_secondary_skill = req.body.employee_secondary_skill;
+  const employee_department=req.body.employee_department;
+  const employee_sub_department=req.body.employee_sub_department;
+  const employee_doj=req.body.employee_doj;
+  const employee_reporting_manager=req.body.employee_reporting_manager;
+  const Dev_status=req.body.Dev_status;
+  const employee_resigned_status=req.body.employee_resigned_status;
+  const gender=req.body.gender;
 
   EmployeeMaster.create({
     employee_id: employee_id,
@@ -177,6 +185,13 @@ exports.createEmployee = (req, res, next) => {
     resource_type: resource_type,
     employee_skill: employee_skill,
     employee_secondary_skill: employee_secondary_skill,
+    employee_department:employee_department,
+    employee_sub_department:employee_sub_department,
+    employee_doj:employee_doj,
+    employee_reporting_manager:employee_reporting_manager,
+    Dev_status:Dev_status,
+    employee_resigned_status,employee_resigned_status,
+    gender:gender
   })
     .then((result) => {
       res.status(201).json({
@@ -299,14 +314,37 @@ exports.showAllAOP = (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
-exports.showAllEmployee = (req, res, next) => {
-  EmployeeMaster.findAll()
+exports.showAllDataOFEmployee= (req, res, next) => {
+  sequelize.query
+  (
+    `Select "a_m"."aop_code" ,"a_m"."sub_aop_code","a_m"."aop_owner","all_master"."project_id","a_m"."business_use","a_m"."request_type",
+    "emp_master"."employee_id","emp_master"."employee_name","emp_master"."employee_band","emp_master"."employee_skill","emp_master"."employee_reporting_manager",
+    "emp_master"."employee_department",
+     "emp_master"."employee_sub_department","emp_master"."employee_doj","emp_master"."employee_resigned_status","emp_master"."dev_status","emp_master"."gender"
+    From "aop_masters" as "a_m",
+    "employee_masters"as "emp_master",
+    "allocation_masters" as "all_master"
+    Where "a_m"."project_code"="all_master"."project_id" and "all_master"."employee_id"="emp_master"."employee_id";
+    
+    `
+  )
     .then((employee) => {
       res.status(200).json(employee);
     })
 
     .catch((err) => console.log(err));
 };
+
+exports.showEmployeeDetail= (req,res,next)=>{
+  EmployeeMaster.findAll()
+
+  .then((employee) => {
+    res.status(200).json(employee);
+  })
+
+  .catch((rr) => console.log(err));
+  
+}
 
 exports.showEmpId = (req, res, next) => {
   EmployeeMaster.findAll({
@@ -316,7 +354,7 @@ exports.showEmpId = (req, res, next) => {
       res.status(200).json(employee);
     })
 
-    .catch((err) => console.log(err));
+    .catch((rr) => console.log(err));
 };
 
 exports.editEmployeeRequest = (req, res, next) => {
@@ -396,4 +434,38 @@ exports.destroyEmployee = (req, res, next) => {
       });
     })
     .catch((err) => console.log(err));
+};
+exports.distinctEmployeeIds = (req, res, next) => {
+  sequelize
+    .query(
+      `SELECT *
+        FROM demand_masters
+        WHERE "demand_masters"."updatedAt" IN
+             (SELECT max("demand_masters"."updatedAt" )
+              FROM demand_masters
+              GROUP BY employee_id)`
+    )
+    .then((employee) => {
+      res.status(200).json({ employee: employee });
+    })
+    .catch((err) => {
+      res.json({ err: err });
+    });
+};
+
+exports.auditTrailbyEmployeeId = (req, res, next) => {
+  const emp_id = req.body.employee_id;
+  demandMaster
+    .findAll({
+      where: {
+        employee_id: emp_id,
+      },
+      order: [["updatedAt", "DESC"]],
+    })
+    .then((employee) => {
+      res.status(200).json({ employee: employee });
+    })
+    .catch((err) => {
+      res.json({ err: err });
+    });
 };

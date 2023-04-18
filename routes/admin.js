@@ -16,9 +16,16 @@ router.get("/showAllApprove", controllers.showAllApprove);
 router.post("/checkBandwidth", controllers.checkBandwidth);
 router.get("/showDashboardStats", controllers.showDashboardStats);
 router.get("/showAllAOP", controllers.showAllAOP);
-router.get("/showAllEmployee",controllers.showAllEmployee);
+router.get("/showAllData",controllers.showAllDataOFEmployee);
 router.put("/updateEmployeeRecord",controllers.editEmployeeRequest);
 router.get("/showEmpId",controllers.showEmpId);
 router.get("/showDashboardStats", controllers.showDashboardStats);
 router.post("/destroyemployee",controllers.destroyEmployee);
+router.get("/showemployeeData",controllers.showEmployeeDetail);
+
+
+
+//Audit Trail
+router.get("/distinctEmployeeIds", controllers.distinctEmployeeIds)
+router.post("/auditTrailbyEmployeeId", controllers.auditTrailbyEmployeeId)
 module.exports = router;
