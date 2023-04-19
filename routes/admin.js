@@ -18,11 +18,17 @@ router.get("/showDashboardStats", controllers.showDashboardStats);
 router.get("/showAllAOP", controllers.showAllAOP);
 router.get("/showAllEmployee", controllers.showAllEmployee);
 router.put("/updateEmployeeRecord", controllers.editEmployeeRequest);
-router.get("/showEmpId", controllers.showEmpId);
-router.get("/showDashboardStats", controllers.showDashboardStats);
-router.post("/destroyemployee", controllers.destroyEmployee);
 router.get("/allocationView", controllers.allocationView);
 router.post("/deleteAOPResource", controllers.deleteAOPResource);
 router.post("/rejectDeleteAOPResource", controllers.rejectDeleteAOPResource);
+router.get("/showAllData",controllers.showAllDataOFEmployee);
+router.get("/showEmpId",controllers.showEmpId);
+router.get("/showDashboardStats", controllers.showDashboardStats);
+router.post("/destroyemployee",controllers.destroyEmployee);
+router.get("/showemployeeData",controllers.showEmployeeDetail);
+router.get("/getAllocationMastersEmployees",controllers.getAllocationMastersEmployees);
 
+//Audit Trail
+router.get("/distinctEmployeeIds", controllers.distinctEmployeeIds)
+router.post("/auditTrailbyEmployeeId", controllers.auditTrailbyEmployeeId)
 module.exports = router;
