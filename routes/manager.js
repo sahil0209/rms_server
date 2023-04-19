@@ -12,11 +12,12 @@ router.post("/editAOPResourceRequest", controllers.editAOPResourceRequest);
 router.post("/fetchAOPResourceRequest", controllers.fetchAOPResourceRequest);
 router.post("/fillAOPResourceRequest", controllers.fillAOPResourceRequest);
 router.post("/getEmployeeBandAndSkill", controllers.getEmployeeBandAndSkill);
+// router.get("/getDemandWithEmployee", controllers.getDemandWithEmployee);
 router.post(
   "/createAdditionalAOPResourceRequest",
   controllers.createAdditionalAOPResourceRequest
 );
-router.post("/deleteAOPResource", controllers.deleteAOPResource);
+router.post("/deleteAOPResourceRequest", controllers.deleteAOPResourceRequest);
 router.post(
   "/addEmployeeAgainstExisting",
   controllers.addEmployeeAgainstExisting
