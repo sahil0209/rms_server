@@ -46,6 +46,9 @@ const employeeMaster = db.define("employee_master", {
   },
   gender:{
     type:Sequelize.STRING
+  },
+  status: {
+    type: Sequelize.STRING
   }
 
 });
