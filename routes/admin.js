@@ -16,9 +16,13 @@ router.get("/showAllApprove", controllers.showAllApprove);
 router.post("/checkBandwidth", controllers.checkBandwidth);
 router.get("/showDashboardStats", controllers.showDashboardStats);
 router.get("/showAllAOP", controllers.showAllAOP);
-router.get("/showAllEmployee",controllers.showAllEmployee);
-router.put("/updateEmployeeRecord",controllers.editEmployeeRequest);
-router.get("/showEmpId",controllers.showEmpId);
+router.get("/showAllEmployee", controllers.showAllEmployee);
+router.put("/updateEmployeeRecord", controllers.editEmployeeRequest);
+router.get("/showEmpId", controllers.showEmpId);
 router.get("/showDashboardStats", controllers.showDashboardStats);
-router.post("/destroyemployee",controllers.destroyEmployee);
+router.post("/destroyemployee", controllers.destroyEmployee);
+router.get("/allocationView", controllers.allocationView);
+router.post("/deleteAOPResource", controllers.deleteAOPResource);
+router.post("/rejectDeleteAOPResource", controllers.rejectDeleteAOPResource);
+
 module.exports = router;

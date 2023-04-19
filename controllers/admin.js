@@ -269,6 +269,150 @@ exports.checkBandwidth = (req, res, next) => {
   );
 };
 
+exports.allocationView = (req, res, next) => {
+  // let employee_id = req.body.employee_id;
+  let resultArr = new Array();
+  EmployeeMaster.findAll().then((result) => {
+    result.forEach((r, i) => {
+      console.log(r.employee_id);
+      AllocationMaster.findAll({ where: { employee_id: r.employee_id } }).then(
+        (res1) => {
+          if (res1.length == 0) {
+            resultArr.push([
+              {
+                january: 0,
+                february: 0,
+                march: 0,
+                april: 0,
+                may: 0,
+                june: 0,
+                july: 0,
+                august: 0,
+                september: 0,
+                october: 0,
+                november: 0,
+                december: 0,
+              },
+            ]);
+          } else {
+            sequelize
+              .query(
+                `
+                  select 
+                  sum(january) as "january",
+                  sum(february) as "february", 
+                  sum(march) as "march", 
+                  sum(april) as "april", 
+                  sum(may) as "may", 
+                  sum(june) as "june", 
+                  sum(july) as "july", 
+                  sum(august) as "august",
+                  sum(september) as "september", 
+                  sum(october) as "october", 
+                  sum(november) as "november",
+                  sum(december) as "december"
+                  from allocation_masters 
+                  group by employee_id 
+                  having employee_id = '${r.employee_id}'
+                `
+              )
+              .then((data) => {
+                // res.status(200).json(data);
+                resultArr.push(data[0]);
+                //console.log(resultArr);
+                //return data[0];
+                console.log("ResultArr : ", resultArr);
+                //res.status(200).send({ res: resultArr });
+              })
+              .catch((err) => console.log(err));
+            // console.log("Result : ", resultArr);
+          }
+          // console.log("/////////////////", result.length);
+          if (i == result.length - 1) {
+            console.log("Inside IF", resultArr);
+            res.status(200).send({ res: resultArr });
+          }
+        }
+      );
+    });
+    //res.status(200).send({ data: resultArr });
+  });
+};
+
+exports.deleteAOPResource = (req, res, next) => {
+  const project_id = req.body.project_id;
+  const employee_id = req.body.employee_id;
+  const band = req.body.band;
+  const resource_type = req.body.resource_type;
+  const skill = req.body.skill;
+  DemandMaster.destroy({
+    where: { project_id: project_id, employee_id: employee_id },
+  })
+    .then((data) => {
+      AllocationMaster.destroy({
+        where: { project_id: project_id, employee_id: employee_id },
+      })
+        .then((result) => {
+          RequestTable.findAll({
+            where: {
+              band: band,
+              resource_type: resource_type,
+              skill: skill,
+            },
+          })
+            .then((data) => {
+              RequestTable.update(
+                {
+                  no_of_employee: Sequelize.literal("no_of_employee - 1"),
+                },
+                {
+                  where: {
+                    project_code: project_id,
+                    band: band,
+                    resource_type: resource_type,
+                    skill: skill,
+                  },
+                }
+              ).then((data) => {
+                res.status(201).json({
+                  message: "Demand request deleted successfully",
+                });
+              });
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+exports.rejectDeleteAOPResourceRequest = (req, res, next) => {
+  const project_id = req.body.project_id;
+  const employee_id = req.body.employee_id;
+  DemandMaster.update(
+    {
+      status: 1,
+    },
+    {
+      where: { project_id: project_id, employee_id: employee_id },
+    }
+  )
+    .then((data) => {
+      res.res.status(201).json({
+        message: "deletion request rejected successfully",
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
 exports.showResourceByProjectId = (req, res, next) => {
   RequestTable.findAll({
     where: { project_code: req.body.project_code },
