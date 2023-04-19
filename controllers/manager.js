@@ -127,9 +127,15 @@ exports.createAOPResourceRequest = (req, res, next) => {
   for (let i = start_month - 1; i < end_month; i++) {
     emp_bandwith[i] = 100;
   }
+  
+  EmployeeMaster.findAll({
+    where : { employee_id : employee_id }
+  }).then((result1) => {
   DemandMaster.create({
     project_id: project_id,
     employee_id: employee_id,
+    employee_name : result1[0].employee_name,
+    employee_reporting_manager : result1[0].employee_reporting_manager,
     january: emp_bandwith[0],
     february: emp_bandwith[1],
     march: emp_bandwith[2],
@@ -161,6 +167,9 @@ exports.createAOPResourceRequest = (req, res, next) => {
     .catch((err) => {
       console.log(err);
     });
+  }).catch((err) => {
+    console.log(err);
+  });
 };
 
 exports.fetchAOPResourceRequest = (req, res, next) => {
@@ -277,9 +286,14 @@ exports.createAdditionalAOPResourceRequest = (req, res, next) => {
   for (let i = start_month - 1; i < end_month; i++) {
     emp_bandwith[i] = 100;
   }
+  EmployeeMaster.findAll({
+    where : { employee_id : employee_id }
+  }).then((result1) => {
   DemandMaster.create({
     project_id: project_id,
     employee_id: employee_id,
+    employee_name : result1[0].employee_name,
+    employee_reporting_manager : result1[0].employee_reporting_manager,
     january: emp_bandwith[0],
     february: emp_bandwith[1],
     march: emp_bandwith[2],
@@ -341,6 +355,9 @@ exports.createAdditionalAOPResourceRequest = (req, res, next) => {
     })
     .catch((err) => {
       console.log(err);
+    })
+  }).catch((err) => {
+      console.log(err);
     });
 };
 
@@ -387,14 +404,14 @@ exports.deleteAOPResource = (req, res, next) => {
             .catch((err) => {
               console.log(err);
             });
-        })
+         })
         .catch((err) => {
           console.log(err);
         });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+         })
+        .catch((err) => {
+          console.log(err);
+        });
 };
 
 exports.addEmployeeAgainstExisting = (req, res, next) => {
