@@ -16,11 +16,11 @@ router.get("/showAllApprove", controllers.showAllApprove);
 router.post("/checkBandwidth", controllers.checkBandwidth);
 router.get("/showDashboardStats", controllers.showDashboardStats);
 router.get("/showAllAOP", controllers.showAllAOP);
-router.get("/showAllEmployee", controllers.showAllEmployee);
+
 router.put("/updateEmployeeRecord", controllers.editEmployeeRequest);
 router.get("/allocationView", controllers.allocationView);
 router.post("/deleteAOPResource", controllers.deleteAOPResource);
-router.post("/rejectDeleteAOPResource", controllers.rejectDeleteAOPResource);
+router.post("/rejectDeleteAOPResource", controllers.rejectDeleteAOPResourceRequest);
 router.get("/showAllData",controllers.showAllDataOFEmployee);
 router.get("/showEmpId",controllers.showEmpId);
 router.get("/showDashboardStats", controllers.showDashboardStats);
