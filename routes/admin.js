@@ -22,6 +22,7 @@ router.get("/showEmpId",controllers.showEmpId);
 router.get("/showDashboardStats", controllers.showDashboardStats);
 router.post("/destroyemployee",controllers.destroyEmployee);
 router.get("/showemployeeData",controllers.showEmployeeDetail);
+router.get("/getAllocationMastersEmployees",controllers.getAllocationMastersEmployees);
 
 
 
