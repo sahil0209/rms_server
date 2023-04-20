@@ -32,14 +32,14 @@ const employeeMaster = db.define("employee_master", {
     type:Sequelize.STRING
   },
   employee_doj:{
-    type:Sequelize.DATE
+    type:Sequelize.STRING
   },
   employee_reporting_manager:
   {
      type:Sequelize.STRING
   },
   employee_resigned_status:{
-    type:Sequelize.BOOLEAN
+    type:Sequelize.STRING
   },
   dev_status:{
     type:Sequelize.STRING
@@ -49,6 +49,10 @@ const employeeMaster = db.define("employee_master", {
   },
   status: {
     type: Sequelize.STRING
+  },
+  AOP_code:
+  {
+    type:Sequelize.STRING
   }
 
 });

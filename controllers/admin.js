@@ -174,12 +174,15 @@ exports.createEmployee = (req, res, next) => {
     const employee_sub_department = req.body.employee_sub_department;
     const employee_doj = req.body.employee_doj;
     const employee_reporting_manager = req.body.employee_reporting_manager;
-    const Dev_status = req.body.Dev_status;
+    const dev_status = req.body.dev_status;
     const employee_resigned_status = req.body.employee_resigned_status;
     const gender = req.body.gender;
+    const status=req.body.status;
+    const AOP_code=req.body.AOP_code;
 
     EmployeeMaster.create({
-        employee_id: employee_id,
+
+        employee_id:employee_id,
         employee_name: employee_name,
         employee_band: employee_band,
         resource_type: resource_type,
@@ -188,11 +191,12 @@ exports.createEmployee = (req, res, next) => {
         employee_department: employee_department,
         employee_sub_department: employee_sub_department,
         employee_doj: employee_doj,
-        employee_reporting_manager: employee_reporting_manager,
-        Dev_status: Dev_status,
-        employee_resigned_status,
-        employee_resigned_status,
+        employee_reporting_manager:employee_reporting_manager,
+        dev_status: dev_status,
+        employee_resigned_status: employee_resigned_status,
         gender: gender,
+        status:status,
+        AOP_code:AOP_code
     })
         .then((result) => {
             res.status(201).json({
