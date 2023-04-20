@@ -38,7 +38,9 @@ exports.getAop_code = (req, res, next) => {
 
 exports.addBand = (req, res, next) => {
   const band = req.body.band;
+  const user_id = req.body.user_id;
   Band.create({
+    user_id: user_id,
     band: band,
   })
     .then((result) => {
@@ -52,7 +54,10 @@ exports.addBand = (req, res, next) => {
 
 exports.addResourceType = (req, res, next) => {
   const resource_type = req.body.resource_type;
+  const user_id = req.body.user_id;
+
   Resource_type.create({
+    user_id: user_id,
     resource_type: resource_type,
   })
     .then((result) => {
@@ -66,7 +71,11 @@ exports.addResourceType = (req, res, next) => {
 
 exports.addSkill = (req, res, next) => {
   const skill = req.body.skill;
+  const user_id = req.body.user_id;
+
+
   Skill.create({
+    user_id: user_id,
     skill: skill,
   })
     .then((result) => {
