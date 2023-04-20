@@ -9,6 +9,12 @@ const allocationMaster = db.define("allocation_master", {
   employee_id: {
     type: Sequelize.STRING,
   },
+  employee_name:{
+    type: Sequelize.STRING,
+  },
+  employee_reporting_manager:{
+    type: Sequelize.STRING,
+  },
   january: {
     type: Sequelize.INTEGER,
   },
