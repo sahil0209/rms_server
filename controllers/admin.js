@@ -127,86 +127,100 @@ exports.approveResource = async (req, res, next) => {
   const skill = req.body.data.skill;
   const resource_type = req.body.resource_type;
   await func(id);
-  AllocationMaster.create({
-    project_id: project_id,
-    employee_id: employee_id,
-    fiscal_year: fiscal_year,
-    january: jan,
-    february: feb,
-    march: mar,
-    april: apr,
-    may: may,
-    june: jun,
-    july: jul,
-    august: aug,
-    september: sep,
-    october: oct,
-    november: nov,
-    december: dec,
-    band: band,
-    skill: skill,
-    resource_type: resource_type,
-  })
-    .then((result) => {
-      DemandMaster.update(
-        { status: 1, reason: reason },
-        { where: { id: id } }
-      ).then((res1) => {
-        res.status(201).json({
-          message: "Resource allocated successfully",
-          user: result,
-        });
-      });
+  EmployeeMaster.findAll({
+    where: { employee_id: employee_id }
+  }).then((result1) => {
+    AllocationMaster.create({
+      project_id: project_id,
+      employee_id: employee_id,
+      employee_name: result1[0].employee_name,
+      employee_reporting_manager: result1[0].employee_reporting_manager,
+      fiscal_year: fiscal_year,
+      january: jan,
+      february: feb,
+      march: mar,
+      april: apr,
+      may: may,
+      june: jun,
+      july: jul,
+      august: aug,
+      september: sep,
+      october: oct,
+      november: nov,
+      december: dec,
+      band: band,
+      skill: skill,
+      resource_type: resource_type,
     })
+      .then((result) => {
+        DemandMaster.update(
+          { status: 1, reason: reason },
+          { where: { id: id } }
+        ).then((res1) => {
+          res.status(201).json({
+            message: "Resource allocated successfully",
+            user: result,
+          });
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  })
     .catch((err) => {
       console.log(err);
     });
 };
 
 exports.createEmployee = (req, res, next) => {
-  const employee_id = req.body.employee_id;
-  const employee_name = req.body.employee_name;
-  const employee_band = req.body.employee_band;
-  const resource_type = req.body.resource_type;
-  const employee_skill = req.body.employee_skill;
-  const employee_secondary_skill = req.body.employee_secondary_skill;
-  const employee_department=req.body.employee_department;
-  const employee_sub_department=req.body.employee_sub_department;
-  const employee_doj=req.body.employee_doj;
-  const employee_reporting_manager=req.body.employee_reporting_manager;
-  const Dev_status=req.body.Dev_status;
-  const employee_resigned_status=req.body.employee_resigned_status;
-  const gender=req.body.gender;
+    const employee_id = req.body.employee_id;
+    const employee_name = req.body.employee_name;
+    const employee_band = req.body.employee_band;
+    const resource_type = req.body.resource_type;
+    const employee_skill = req.body.employee_skill;
+    const employee_secondary_skill = req.body.employee_secondary_skill;
+    const employee_department = req.body.employee_department;
+    const employee_sub_department = req.body.employee_sub_department;
+    const employee_doj = req.body.employee_doj;
+    const employee_reporting_manager = req.body.employee_reporting_manager;
+    const dev_status = req.body.dev_status;
+    const employee_resigned_status = req.body.employee_resigned_status;
+    const gender = req.body.gender;
+    const status=req.body.status;
+    const AOP_code=req.body.AOP_code;
 
-  EmployeeMaster.create({
-    employee_id: employee_id,
-    employee_name: employee_name,
-    employee_band: employee_band,
-    resource_type: resource_type,
-    employee_skill: employee_skill,
-    employee_secondary_skill: employee_secondary_skill,
-    employee_department:employee_department,
-    employee_sub_department:employee_sub_department,
-    employee_doj:employee_doj,
-    employee_reporting_manager:employee_reporting_manager,
-    Dev_status:Dev_status,
-    employee_resigned_status,employee_resigned_status,
-    gender:gender
-  })
-    .then((result) => {
-      res.status(201).json({
-        success: true,
-        message: "Employee created successfully!",
-        Employee: result,
-      });
+    EmployeeMaster.create({
+
+        employee_id:employee_id,
+        employee_name: employee_name,
+        employee_band: employee_band,
+        resource_type: resource_type,
+        employee_skill: employee_skill,
+        employee_secondary_skill: employee_secondary_skill,
+        employee_department: employee_department,
+        employee_sub_department: employee_sub_department,
+        employee_doj: employee_doj,
+        employee_reporting_manager:employee_reporting_manager,
+        dev_status: dev_status,
+        employee_resigned_status: employee_resigned_status,
+        gender: gender,
+        status:status,
+        AOP_code:AOP_code
     })
-    .catch((err) => {
-      res.json({
-        success: false,
-        message: "Employee already exist",
-        error: err,
-      });
-    });
+        .then((result) => {
+            res.status(201).json({
+                success: true,
+                message: "Employee created successfully!",
+                Employee: result,
+            });
+        })
+        .catch((err) => {
+            res.json({
+                success: false,
+                message: "Employee already exist",
+                error: err,
+            });
+        });
 };
 
 exports.showAllDemand = (req, res, next) => {
@@ -284,6 +298,150 @@ exports.checkBandwidth = (req, res, next) => {
   );
 };
 
+exports.allocationView = (req, res, next) => {
+  // let employee_id = req.body.employee_id;
+  let resultArr = new Array();
+  EmployeeMaster.findAll().then((result) => {
+    result.forEach((r, i) => {
+      console.log(r.employee_id);
+      AllocationMaster.findAll({ where: { employee_id: r.employee_id } }).then(
+        (res1) => {
+          if (res1.length == 0) {
+            resultArr.push([
+              {
+                january: 0,
+                february: 0,
+                march: 0,
+                april: 0,
+                may: 0,
+                june: 0,
+                july: 0,
+                august: 0,
+                september: 0,
+                october: 0,
+                november: 0,
+                december: 0,
+              },
+            ]);
+          } else {
+            sequelize
+              .query(
+                `
+                  select 
+                  sum(january) as "january",
+                  sum(february) as "february", 
+                  sum(march) as "march", 
+                  sum(april) as "april", 
+                  sum(may) as "may", 
+                  sum(june) as "june", 
+                  sum(july) as "july", 
+                  sum(august) as "august",
+                  sum(september) as "september", 
+                  sum(october) as "october", 
+                  sum(november) as "november",
+                  sum(december) as "december"
+                  from allocation_masters 
+                  group by employee_id 
+                  having employee_id = '${r.employee_id}'
+                `
+              )
+              .then((data) => {
+                // res.status(200).json(data);
+                resultArr.push(data[0]);
+                //console.log(resultArr);
+                //return data[0];
+                console.log("ResultArr : ", resultArr);
+                //res.status(200).send({ res: resultArr });
+              })
+              .catch((err) => console.log(err));
+            // console.log("Result : ", resultArr);
+          }
+          // console.log("/////////////////", result.length);
+          if (i == result.length - 1) {
+            console.log("Inside IF", resultArr);
+            res.status(200).send({ res: resultArr });
+          }
+        }
+      );
+    });
+    //res.status(200).send({ data: resultArr });
+  });
+};
+
+exports.deleteAOPResource = (req, res, next) => {
+  const project_id = req.body.project_id;
+  const employee_id = req.body.employee_id;
+  const band = req.body.band;
+  const resource_type = req.body.resource_type;
+  const skill = req.body.skill;
+  DemandMaster.destroy({
+    where: { project_id: project_id, employee_id: employee_id },
+  })
+    .then((data) => {
+      AllocationMaster.destroy({
+        where: { project_id: project_id, employee_id: employee_id },
+      })
+        .then((result) => {
+          RequestTable.findAll({
+            where: {
+              band: band,
+              resource_type: resource_type,
+              skill: skill,
+            },
+          })
+            .then((data) => {
+              RequestTable.update(
+                {
+                  no_of_employee: Sequelize.literal("no_of_employee - 1"),
+                },
+                {
+                  where: {
+                    project_code: project_id,
+                    band: band,
+                    resource_type: resource_type,
+                    skill: skill,
+                  },
+                }
+              ).then((data) => {
+                res.status(201).json({
+                  message: "Demand request deleted successfully",
+                });
+              });
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+exports.rejectDeleteAOPResourceRequest = (req, res, next) => {
+  const project_id = req.body.project_id;
+  const employee_id = req.body.employee_id;
+  DemandMaster.update(
+    {
+      status: 1,
+    },
+    {
+      where: { project_id: project_id, employee_id: employee_id },
+    }
+  )
+    .then((data) => {
+      res.res.status(201).json({
+        message: "deletion request rejected successfully",
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
 exports.showResourceByProjectId = (req, res, next) => {
   RequestTable.findAll({
     where: { project_code: req.body.project_code },
@@ -314,10 +472,11 @@ exports.showAllAOP = (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
-exports.showAllDataOFEmployee= (req, res, next) => {
-  sequelize.query
-  (
-    `Select "a_m"."aop_code" ,"a_m"."sub_aop_code","a_m"."aop_owner","all_master"."project_id","a_m"."business_use","a_m"."request_type",
+
+exports.showAllDataOFEmployee = (req, res, next) => {
+  sequelize
+    .query(
+      `Select "a_m"."aop_code" ,"a_m"."sub_aop_code","a_m"."aop_owner","all_master"."project_id","a_m"."business_use","a_m"."request_type",
     "emp_master"."employee_id","emp_master"."employee_name","emp_master"."employee_band","emp_master"."employee_skill","emp_master"."employee_reporting_manager",
     "emp_master"."employee_department",
      "emp_master"."employee_sub_department","emp_master"."employee_doj","emp_master"."employee_resigned_status","emp_master"."dev_status","emp_master"."gender"
@@ -327,7 +486,7 @@ exports.showAllDataOFEmployee= (req, res, next) => {
     Where "a_m"."project_code"="all_master"."project_id" and "all_master"."employee_id"="emp_master"."employee_id";
     
     `
-  )
+    )
     .then((employee) => {
       res.status(200).json(employee);
     })
@@ -335,16 +494,15 @@ exports.showAllDataOFEmployee= (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
-exports.showEmployeeDetail= (req,res,next)=>{
+exports.showEmployeeDetail = (req, res, next) => {
   EmployeeMaster.findAll()
 
-  .then((employee) => {
-    res.status(200).json(employee);
-  })
+    .then((employee) => {
+      res.status(200).json(employee);
+    })
 
-  .catch((rr) => console.log(err));
-  
-}
+    .catch((err) => console.log(err));
+};
 
 exports.showEmpId = (req, res, next) => {
   EmployeeMaster.findAll({
@@ -412,7 +570,8 @@ exports.showDashboardStats = (req, res, next) => {
                   res.status(200).send({
                     allAOPCount: allAOPCount[0],
                     pendingAOPCount: pendingAOPCount[0],
-                    pendingResourceCount: pendingResourceCount[0],
+                    pendingResourceCount:
+                      pendingResourceCount[0],
                     hireResourceCount: hireResourceCount[0],
                   });
                 });
@@ -449,6 +608,30 @@ exports.distinctEmployeeIds = (req, res, next) => {
       res.status(200).json({ employee: employee });
     })
     .catch((err) => {
+      res.json({ err: err });
+    });
+};
+
+exports.getAllocationMastersEmployees = (req, res, next) => {
+  sequelize.query(`select employee_id,
+  sum(january) as "january",
+  sum(february) as "february", 
+  sum(march) as "march", 
+  sum(april) as "april", 
+  sum(may) as "may", 
+  sum(june) as "june", 
+  sum(july) as "july", 
+  sum(august) as "august",
+  sum(september) as "september", 
+  sum(october) as "october", 
+  sum(november) as "november",
+  sum(december) as "december"
+  from allocation_masters
+  group by employee_id`)
+    .then((result) => {
+      res.status(200).json(result[0]);
+    }).catch((err) => {
+      console.log(err);
       res.json({ err: err });
     });
 };

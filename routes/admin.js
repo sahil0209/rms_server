@@ -16,14 +16,17 @@ router.get("/showAllApprove", controllers.showAllApprove);
 router.post("/checkBandwidth", controllers.checkBandwidth);
 router.get("/showDashboardStats", controllers.showDashboardStats);
 router.get("/showAllAOP", controllers.showAllAOP);
+
+router.put("/updateEmployeeRecord", controllers.editEmployeeRequest);
+router.get("/allocationView", controllers.allocationView);
+router.post("/deleteAOPResource", controllers.deleteAOPResource);
+router.post("/rejectDeleteAOPResource", controllers.rejectDeleteAOPResourceRequest);
 router.get("/showAllData",controllers.showAllDataOFEmployee);
-router.put("/updateEmployeeRecord",controllers.editEmployeeRequest);
 router.get("/showEmpId",controllers.showEmpId);
 router.get("/showDashboardStats", controllers.showDashboardStats);
 router.post("/destroyemployee",controllers.destroyEmployee);
 router.get("/showemployeeData",controllers.showEmployeeDetail);
-
-
+router.get("/getAllocationMastersEmployees",controllers.getAllocationMastersEmployees);
 
 //Audit Trail
 router.get("/distinctEmployeeIds", controllers.distinctEmployeeIds)

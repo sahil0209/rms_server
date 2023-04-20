@@ -1,5 +1,6 @@
 const Sequelize = require("sequelize");
 const db = require("../util/db");
+const DemandMaster = require("../models/demand_master");
 
 const employeeMaster = db.define("employee_master", {
   id: {
@@ -8,7 +9,7 @@ const employeeMaster = db.define("employee_master", {
   },
   employee_id: {
     type: Sequelize.STRING,
-    primaryKey: true
+    primaryKey: true,
   },
   employee_name: {
     type: Sequelize.STRING,
@@ -32,22 +33,31 @@ const employeeMaster = db.define("employee_master", {
     type:Sequelize.STRING
   },
   employee_doj:{
-    type:Sequelize.DATE
+    type:Sequelize.STRING
   },
   employee_reporting_manager:
   {
      type:Sequelize.STRING
   },
   employee_resigned_status:{
-    type:Sequelize.BOOLEAN
+    type:Sequelize.STRING
   },
   dev_status:{
     type:Sequelize.STRING
   },
   gender:{
     type:Sequelize.STRING
+  },
+  status: {
+    type: Sequelize.STRING
+  },
+  AOP_code:
+  {
+    type:Sequelize.STRING
   }
 
 });
+
+// employeeMaster.hasMany(DemandMaster);
 
 module.exports = employeeMaster;

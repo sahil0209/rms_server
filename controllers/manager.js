@@ -4,6 +4,7 @@ const DemandMaster = require("../models/demand_master");
 const AllocationMaster = require("../models/allocation_master");
 const EmployeeMaster = require("../models/employee_master");
 const Sequelize = require("sequelize");
+const sequelize = require("../util/db");
 const allocationMaster = require("../models/allocation_master");
 
 exports.createAOPRequest = (req, res, next) => {
@@ -120,16 +121,22 @@ exports.createAOPResourceRequest = (req, res, next) => {
   // const nov = req.body.nov || 0;
   // const dec = req.body.dec || 0;
   const fiscal_year = req.body.fiscal_year;
-  const band = req.body.band;
+  const band = req.body.band || "NA";
   const skill = req.body.skill;
   const resource_type = req.body.resource_type;
   const emp_bandwith = new Array(12).fill(0);
   for (let i = start_month - 1; i < end_month; i++) {
     emp_bandwith[i] = 100;
   }
+  
+  EmployeeMaster.findAll({
+    where : { employee_id : employee_id }
+  }).then((result1) => {
   DemandMaster.create({
     project_id: project_id,
     employee_id: employee_id,
+    employee_name : result1[0].employee_name,
+    employee_reporting_manager : result1[0].employee_reporting_manager,
     january: emp_bandwith[0],
     february: emp_bandwith[1],
     march: emp_bandwith[2],
@@ -161,6 +168,9 @@ exports.createAOPResourceRequest = (req, res, next) => {
     .catch((err) => {
       console.log(err);
     });
+  }).catch((err) => {
+    console.log(err);
+  });
 };
 
 exports.fetchAOPResourceRequest = (req, res, next) => {
@@ -202,22 +212,40 @@ exports.getEmployeeBandAndSkill = (req, res, next) => {
   const employee_secondary_skill = req.body.employee_secondary_skill;
   const resource_type = req.body.resource_type;
 
-  EmployeeMaster.findAll({
-    where: {
-      employee_band: band,
-      employee_skill: skill,
-      resource_type: resource_type,
-      // employee_secondary_skill: employee_secondary_skill,
-    },
-  })
-    .then((result) => {
-      res.send({
-        emp: result,
-      });
+  if (resource_type === "Partner" || resource_type === "Intern") {
+    EmployeeMaster.findAll({
+      where: {
+        employee_skill: skill,
+        resource_type: resource_type,
+        // employee_secondary_skill: employee_secondary_skill,
+      },
     })
-    .catch((err) => {
-      console.log(err);
-    });
+      .then((result) => {
+        res.send({
+          emp: result,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } else {
+    EmployeeMaster.findAll({
+      where: {
+        employee_band: band,
+        employee_skill: skill,
+        resource_type: resource_type,
+        // employee_secondary_skill: employee_secondary_skill,
+      },
+    })
+      .then((result) => {
+        res.send({
+          emp: result,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 };
 
 exports.editAOPResourceRequest = (req, res, next) => {
@@ -277,9 +305,14 @@ exports.createAdditionalAOPResourceRequest = (req, res, next) => {
   for (let i = start_month - 1; i < end_month; i++) {
     emp_bandwith[i] = 100;
   }
+  EmployeeMaster.findAll({
+    where : { employee_id : employee_id }
+  }).then((result1) => {
   DemandMaster.create({
     project_id: project_id,
     employee_id: employee_id,
+    employee_name : result1[0].employee_name,
+    employee_reporting_manager : result1[0].employee_reporting_manager,
     january: emp_bandwith[0],
     february: emp_bandwith[1],
     march: emp_bandwith[2],
@@ -341,61 +374,34 @@ exports.createAdditionalAOPResourceRequest = (req, res, next) => {
     })
     .catch((err) => {
       console.log(err);
+    })
+  }).catch((err) => {
+      console.log(err);
     });
 };
 
-exports.deleteAOPResource = (req, res, next) => {
+exports.deleteAOPResourceRequest = (req, res, next) => {
   const project_id = req.body.project_id;
   const employee_id = req.body.employee_id;
   const band = req.body.band;
   const resource_type = req.body.resource_type;
   const skill = req.body.skill;
-  DemandMaster.destroy({
+  DemandMaster.update({
+    status:-2
+  }
+    ,{
     where: { project_id: project_id, employee_id: employee_id },
   })
     .then((data) => {
-      AllocationMaster.destroy({
-        where: { project_id: project_id, employee_id: employee_id },
-      })
-        .then((result) => {
-          RequestTable.findAll({
-            where: {
-              band: band,
-              resource_type: resource_type,
-              skill: skill,
-            },
-          })
-            .then((data) => {
-              RequestTable.update(
-                {
-                  no_of_employee: Sequelize.literal("no_of_employee - 1"),
-                },
-                {
-                  where: {
-                    project_code: project_id,
-                    band: band,
-                    resource_type: resource_type,
-                    skill: skill,
-                  },
-                }
-              ).then((data) => {
-                res.status(201).json({
-                  message: "Demand request deleted successfully",
-                });
-              });
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      res.res.status(201).json({
+        message: "Demand deletion request sent successfully",
+      });
     })
     .catch((err) => {
       console.log(err);
     });
 };
+
 
 exports.addEmployeeAgainstExisting = (req, res, next) => {
   const id = req.body.id;
@@ -434,3 +440,31 @@ exports.addEmployeeAgainstExisting = (req, res, next) => {
       console.log(err);
     });
 };
+// order by "dm"."updatedAt" desc;"dm"."project_id",
+
+// select "em"."employee_id", "em"."employee_name", "dm"."updatedAt"
+//       from "employee_masters" as "em", "demand_masters" as "dm"
+//       where "em"."employee_id" = "dm"."employee_id"
+//       group by "em"."employee_id"
+//       having "dm"."updatedAt" >=  "dm"."updatedAt";
+// exports.getDemandWithEmployee = (req, res, next) => {
+//   sequelize
+//     .query(
+//       `
+//       select distinct "em1"."employee_id"
+//       from "employee_masters" as "em1"
+//       where (select max("em"."updatedAt")
+//             from "employee_masters" as "em"
+//             where "em"."employee_id" = "em1"."employee_id");
+//       `
+//     )
+//     .then((result) => {
+//       res.status(201).json({
+//         message: "New employee added against previous employee",
+//         result: result,
+//       });
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//     });
+// };
