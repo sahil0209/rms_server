@@ -638,8 +638,7 @@ exports.getAllocationMastersEmployees = (req, res, next) => {
 
 exports.auditTrailbyEmployeeId = (req, res, next) => {
   const emp_id = req.body.employee_id;
-  demandMaster
-    .findAll({
+  DemandMaster.findAll({
       where: {
         employee_id: emp_id,
       },
@@ -647,6 +646,7 @@ exports.auditTrailbyEmployeeId = (req, res, next) => {
     })
     .then((employee) => {
       res.status(200).json({ employee: employee });
+      console.log(employee);
     })
     .catch((err) => {
       res.json({ err: err });
